@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "ESthftQHMrGJKu7rGr/CcxT2tCxzSw3Bfmt1grl7E89cro6l8fn2wcIJeZu0T9YvS/Am14a3wov9Z0M3+tLJZw==",
+  "success": true,
+  "projectFilePath": "C:\\Learn\\iTube\\iTube\\iTube.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\432179\\.nuget\\packages\\dragablz\\0.0.3.234\\dragablz.0.0.3.234.nupkg.sha512",
+    "C:\\Users\\432179\\.nuget\\packages\\materialdesigncolors\\2.1.4\\materialdesigncolors.2.1.4.nupkg.sha512",
+    "C:\\Users\\432179\\.nuget\\packages\\materialdesignthemes\\4.9.0\\materialdesignthemes.4.9.0.nupkg.sha512",
+    "C:\\Users\\432179\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.39\\microsoft.xaml.behaviors.wpf.1.1.39.nupkg.sha512"
+  ],
+  "logs": []
+}

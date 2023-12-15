@@ -1,0 +1,99 @@
+﻿<UserControl x:Class="iTube.Control.PlayControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:iTube.Control"
+             xmlns:converter="clr-namespace:iTube.Converter"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converter:BoolToVisibilityConverter x:Key="boolToVisibility"/>
+        <converter:RateConverter x:Key="rateConverter"/>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Grid.Column="0">
+            <local:VideoControl x:Name="videoControl" Margin="10"/>
+
+            <Grid>
+                <StackPanel Margin="10 0 0 0" Orientation="Vertical">
+                    <Label Content="{Binding Title}" FontSize="18"/>
+                    <Label Content="{Binding Views}" ContentStringFormat="조회수 {0}회" Foreground="Gray" FontSize="10"/>
+                    <Label Content="{Binding Date}" ContentStringFormat="게시일: yyyy. MM. dd" Foreground="Gray" FontSize="10"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 0 5 0 ">
+                    <Button x:Name="LIKE" Background="{x:Null}" BorderBrush="{x:Null}" Padding="5 0 5 0" Click="Rate_Click">
+                        <materialDesign:PackIcon Kind="Like" Foreground="{Binding VideoRate, Converter={StaticResource rateConverter}, ConverterParameter=LIKE}" Width="18" Height="18"/>
+                    </Button>
+                    <Label Content="{Binding LikeCount}" Margin="0 2 10 0"/>
+                    <Button x:Name="DISLIKE" Background="{x:Null}" BorderBrush="{x:Null}" Padding="5 0 5 0"  Click="Rate_Click">
+                        <materialDesign:PackIcon Kind="Dislike" Foreground="{Binding VideoRate, Converter={StaticResource rateConverter}, ConverterParameter=DISLIKE}" Width="18" Height="18"/>
+                    </Button>
+                    <Label Content="{Binding DislikeCount}" Margin="0 2 0 0"/>
+                </StackPanel>
+            </Grid>
+
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <StackPanel Grid.Row="0">
+                <Grid VerticalAlignment="Top" Margin="10 10 10 10">
+                    <StackPanel Orientation="Horizontal" Margin="0 3 0 0">
+                        <Grid>
+                            <Ellipse Width="30" Height="30" Grid.Column="0" Fill="#FFBBBBBB" VerticalAlignment="Top"/>
+                            <Ellipse Width="30" Height="30" Grid.Column="0" VerticalAlignment="Top" >
+                                <Ellipse.Fill>
+                                    <ImageBrush ImageSource="{Binding ChannelProfile.ChannelArt, IsAsync=True}"  />
+                                </Ellipse.Fill>
+                            </Ellipse>
+                        </Grid>
+                        <Label Content="{Binding ChannelProfile.ChannelName}"/>
+                    </StackPanel>
+                    <Button Content="구독" HorizontalAlignment="Right" Grid.Column="1"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+                <Separator Margin="0 0 10 0"/>
+                <Label Content="{Binding CommentCount}" ContentStringFormat="댓글 {0}개" Margin="0 5 0 0"  Grid.Row="1"/>
+            </StackPanel>
+            <ListView x:Name="CommentListView" ItemsSource="{Binding CommentList}" SelectionChanged="CommentListView_SelectionChanged" Grid.Row="1">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Grid>
+                                <Ellipse Width="30" Height="30" Grid.Column="0" Fill="#FFBBBBBB" Margin="5 -15 0 0"/>
+                                <Ellipse Width="30" Height="30" Grid.Column="0" Margin="5 -15 0 0" >
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding ChannelProfile.ChannelArt, IsAsync=True}"  />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                            </Grid>
+                            <StackPanel Margin="5 -5 0 0">
+                                <StackPanel Orientation="Horizontal">
+                                    <Label Content="{Binding ChannelProfile.ChannelName}"/>
+                                    <Label Content="{Binding Date}" ContentStringFormat="yyyy. MM. dd"/>
+                                </StackPanel>
+                                <Label Content="{Binding Content}" Margin="0 -5 0 0 "/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Grid Grid.Row="2" Margin="5">
+                <TextBox Text="공개 댓글 추가.." Foreground="Gray" Visibility="{Binding ElementName=commentBox, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
+                <TextBox Name="commentBox" KeyDown="commentBox_KeyDown"/>
+            </Grid>
+            <Grid.RowDefinitions >
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+        </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="4*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+    </Grid>
+</UserControl>
