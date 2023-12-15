@@ -3,7 +3,7 @@ name: "Intuit Project"
 on:
   push:
     tags:
-     - "*"
+      - "*"
 
 env:
   PROJECT_PATH: iTube.sln
