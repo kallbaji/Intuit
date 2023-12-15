@@ -2,9 +2,9 @@ name: "Intuit Project"
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      -"*"
+
 env:
   PROJECT_PATH: iTube.sln
 
