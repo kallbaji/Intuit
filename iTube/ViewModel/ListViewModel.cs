@@ -1,5 +1,6 @@
 ﻿using DAL;
 using iTube.Model;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,42 +21,40 @@ namespace iTube.ViewModel
         public ListViewModel()
         {
             VideoList = new ObservableCollection<Video>();
-            dbHelper = new DBHelper("itube", "itube",App.SHORT_SERVER_URI, "itube");
+            dbHelper = new DBHelper();
             GetVideo();
         }
 
         public void GetVideo()
         {
-            
+
             dbHelper.OpenConnection();
 
-            string result = dbHelper.ExecuteReaderQuery(
+            MySqlDataReader result = dbHelper.ExecuteReaderQuery(
                 "SELECT " +
-                "idx, title, uploader, thumbnail, video, views, date FROM video;" 
+                "idx, title, uploader, thumbnail, video, views, date_upload FROM video;"
                 );
-            if (result != null)
+            while (result.Read())
             {
-                while (result!=null)
+                Video video = new Video()
                 {
-                    Video video = new Video()
-                    {
-                        //ChannelProfile = Utils.GetProfileByIdx(Convert.ToInt32(result[2].ToString())),
+                    ChannelProfile = Utils.GetProfileByIdx(Convert.ToInt32(result[2].ToString())),
 
-                        //Index = Convert.ToInt32(result[0].ToString()),
-                        //Title = result[1].ToString(),
-                        //Thumbnail = new BitmapImage(new Uri(result[3].ToString())),
-                        //VideoLink = result[4].ToString(),
-                        //Views = Convert.ToInt32(result[5]),
-                        //Date = (DateTime)result[6]
-                    };
+                    Index = Convert.ToInt32(result[0].ToString()),
+                    Title = result[1].ToString(),
+                    Thumbnail = new BitmapImage(new Uri(result[3].ToString())),
+                    VideoLink = result[4].ToString(),
+                    Views = Convert.ToInt32(result[5]),
+                    Date = (DateTime)result[6]
+                };
 
 
 
-                    VideoList.Add(video);
-                }
+                VideoList.Add(video);
 
-              //  result.Close();
             }
+                result.Close();
+            
             dbHelper.CloseConnection();
         }
     }

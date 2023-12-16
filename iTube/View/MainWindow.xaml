@@ -17,9 +17,17 @@
                 </Button>
                 <TextBlock Margin="0 2 0 0" Text="Home" Foreground="White" FontSize="18" />
             </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Button HorizontalAlignment="Right" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Click="Button_Click_1">
+                <materialDesign:PackIcon Kind="WindowMinimize"/>
+            </Button>
+            <Button HorizontalAlignment="Right" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Click="Button_Click_2">
+                <materialDesign:PackIcon Kind="WindowMaximize"/>
+            </Button>
             <Button HorizontalAlignment="Right" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" Click="Button_Click">
                 <materialDesign:PackIcon Kind="Close"/>
             </Button>
+            </StackPanel>
         </Grid>
         <Grid Margin="0 45 0 0">
             <control:MainControl x:Name="mainControl" backVisibility="MainControl_backVisibility"/>

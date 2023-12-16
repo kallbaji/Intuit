@@ -38,7 +38,7 @@ namespace iTube.Control
 
         public void PlayVideo(string filename)
         {
-            mediaPlayer.Source = new Uri(App.SERVER_URI+"/video/"+filename);
+            mediaPlayer.Source = new Uri(filename);
             mediaPlayer.Play();
         }
 

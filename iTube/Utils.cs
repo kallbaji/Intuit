@@ -1,5 +1,6 @@
 ﻿using DAL;
 using iTube.Model;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,10 @@ namespace iTube
     {
         public static Profile GetProfileByIdx(int uid)
         {
-            DBHelper dbHelper = new DBHelper("itube", "itube", App.SHORT_SERVER_URI, "itube");
+            DBHelper dbHelper = new DBHelper();
             dbHelper.OpenConnection();
-            string result = dbHelper.ExecuteReaderQuery("SELECT nick, profile FROM user WHERE idx = " + uid + ";");
-            while (result != null)
+            MySqlDataReader result = dbHelper.ExecuteReaderQuery("SELECT nick, profile_pic FROM user_table WHERE idx = " + uid + ";");
+            while (result.Read())
             {
                 Profile profile = new Profile()
                 {
@@ -24,7 +25,7 @@ namespace iTube
                     ChannelName = result[0].ToString(),
                     ChannelArt = CreateProfileImage(result[1].ToString())
                 };
-             //   result.Close();
+                result.Close();
                 dbHelper.CloseConnection();
 
                 return profile;
@@ -38,7 +39,7 @@ namespace iTube
             profileImage.BeginInit();
             if (filename.Trim().Length == 0)
             {
-                profileImage.UriSource = new Uri("pack://application:,,,/iTube;component/Resource/ic_person.png", UriKind.Absolute);
+                profileImage.UriSource = new Uri("pack://application:,,,/iTube;component/Resource/ic_person.png", UriKind.RelativeOrAbsolute);
             }
 
             else

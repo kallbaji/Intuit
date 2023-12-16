@@ -140,7 +140,7 @@ namespace iTube.ViewModel
 
         public PlayViewModel()
         {
-            dbHelper = new DBHelper("itube", "itube", App.SHORT_SERVER_URI, "itube");
+            dbHelper = new DBHelper();
             CommentList = new ObservableCollection<Comment>();
         }
         

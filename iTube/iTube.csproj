@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resource\ic_person.png" />
+    <None Remove="Resource\logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dragablz" Version="0.0.3.234" />
     <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
@@ -15,6 +20,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DAL\DAL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\ic_person.png" />
+    <Resource Include="Resource\logo.png" />
   </ItemGroup>
 
 </Project>

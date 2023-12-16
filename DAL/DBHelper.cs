@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -8,45 +9,55 @@ using System.Windows;
 
 namespace DAL
 {
-   public class DBHelper
+    public class DBHelper
     {
-        
-        
+        private MySqlConnection Connection;
+        private MySqlCommand Command;
 
-        public DBHelper(string id, string pw, string host, string name)
+        private string DB_ID="admin";
+        private string DB_PW="gaurishankarpandey";
+        private string DB_HOST= "intuit.clu1umb27qya.ap-southeast-2.rds.amazonaws.com";
+        private string DB_NAME="iTube";
+
+
+        public DBHelper()
         {
-            //Connection = new MySqlConnection();
-            //DB_ID = id;
-            //DB_PW = pw;
-            //DB_HOST = host;
-            //DB_NAME = name;
+            Connection = new MySqlConnection();
 
-            //Connection.ConnectionString = String.Format("server={0};database={1};uid={2};password={3};", DB_HOST, DB_NAME, DB_ID, DB_PW);
+            var connectionStringBuilder = new MySqlConnectionStringBuilder
+            {
+                Server =DB_HOST,
+                UserID = DB_ID,
+                Password = DB_PW,
+                Database = DB_NAME,
+                Port=3306
+                
+            };
+            Connection.ConnectionString = connectionStringBuilder.ToString();
         }
 
-        public void OpenConnection() {
-           // Connection.Open();
+        public void OpenConnection()
+        {
+            Connection.Open();
         }
 
         public void CloseConnection()
         {
-           // Connection.Close();
+            Connection.Close();
         }
-        
-        public string ExecuteReaderQuery(string query)
+
+        public MySqlDataReader ExecuteReaderQuery(string query)
         {
-            //Command = new MySqlCommand(query, Connection);
-           // MySqlDataReader Result = Command.ExecuteReader();
-            //return Result;
-            return null;
+            Command = new MySqlCommand(query, Connection);
+            MySqlDataReader Result = Command.ExecuteReader();
+            return Result;
         }
 
         public int ExecuteQuery(string query)
         {
-            //Command = new MySqlCommand(query, Connection);
-            //int Result = Command.ExecuteNonQuery();
-            //return Result;
-            return 0;
+            Command = new MySqlCommand(query, Connection);
+            int Result = Command.ExecuteNonQuery();
+            return Result;
         }
     }
 }
