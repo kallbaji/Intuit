@@ -1,4 +1,6 @@
-﻿using DAL;
+﻿using AWS_S3_Storage;
+using DAL;
+using GalaSoft.MvvmLight.Command;
 using iTube.Model;
 using System;
 using System.Collections.Generic;
@@ -8,13 +10,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace iTube.ViewModel
 {
     public class PlayViewModel : INotifyPropertyChanged
     {
         private DBHelper dbHelper;
+        private AWSStorage aWSStorage;
 
+        public RelayCommand DownloadCommand { get; set; }
         private ObservableCollection<Comment> commentList;
         public ObservableCollection<Comment> CommentList
         {
@@ -124,7 +129,7 @@ namespace iTube.ViewModel
                 NotifyPropertyChanged(nameof(CommentCount));
             }
         }
-        
+
 
         private int ChannelIndex
         {
@@ -142,8 +147,19 @@ namespace iTube.ViewModel
         {
             dbHelper = new DBHelper();
             CommentList = new ObservableCollection<Comment>();
+            DownloadCommand = new RelayCommand(OnDownloadCommand);
+            aWSStorage = new AWSStorage();
         }
-        
+
+        private async void OnDownloadCommand()
+        {
+            var dialog = new CommonOpenFileDialog();
+            dialog.IsFolderPicker = true;
+            CommonFileDialogResult result = dialog.ShowDialog();
+            if (result == CommonFileDialogResult.Ok)
+                await aWSStorage.DownloadFile(Title, dialog.FileName);
+        }
+
         private void SetVideoInfo()
         {
             if (CurrentVideo != null)
@@ -186,7 +202,7 @@ namespace iTube.ViewModel
             CommentCount = 0;
 
             //MySqlDataReader result = dbHelper.ExecuteReaderQuery("SELECT idx, uid, content, date FROM comment WHERE vid = "+Index+";");
-            
+
             //while (result.Read())
             //{
             //    Comment comment = new Comment()
@@ -208,7 +224,7 @@ namespace iTube.ViewModel
             dbHelper.OpenConnection();
             dbHelper.ExecuteQuery(String.Format("INSERT INTO comment(vid, uid, content) VALUES({0}, {1}, \"{2}\");",
                 Index, uid, content));
-            
+
             GetComment();
 
             dbHelper.CloseConnection();
@@ -218,7 +234,7 @@ namespace iTube.ViewModel
         {
             dbHelper.OpenConnection();
             dbHelper.ExecuteQuery("DELETE FROM comment WHERE idx = " + cid + ";");
-            
+
             GetComment();
 
             dbHelper.CloseConnection();
@@ -251,13 +267,13 @@ namespace iTube.ViewModel
             //    }
             //}
             //result.Close();
-            
+
         }
 
         public void RateVideo(Rate rate)
         {
             dbHelper.OpenConnection();
-            if(VideoRate == rate) // 좋아요or싫어요 삭제
+            if (VideoRate == rate) // 좋아요or싫어요 삭제
             {
                 ControlCount(rate, true);
                 dbHelper.ExecuteQuery(String.Format("DELETE FROM rate WHERE uid = '{0}' AND vid = '{1}';", App.USER_IDX, Index));

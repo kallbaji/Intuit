@@ -1,7 +1,10 @@
 ﻿using Amazon.Runtime.CredentialManagement;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Amazon.S3.Transfer;
+using Microsoft.Win32.SafeHandles;
 using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -10,14 +13,11 @@ namespace AWS_S3_Storage
     public class AWSStorage
     {
         private string bucketName = "intuitbuket";
-        // private string keyName = "Remove_Filter.mp4";
-        //  private string filePath = @"C:\Users\432179\Desktop\WZInProgressIssue.mp4";
 
-
-        public async Task<HttpStatusCode> UploadFile(string keyName,string filePath)
+        public async Task<HttpStatusCode> UploadFile(string keyName, string filePath)
         {
             var client = new AmazonS3Client("AKIA2YNUHHPWK7JUWOGF", "D8Wpeg4WpCQB3PpOaMMhkCnBF9mt8cCrLoew2PA8", Amazon.RegionEndpoint.APSouth1);
-           
+
             try
             {
                 PutObjectRequest putRequest = new PutObjectRequest
@@ -25,12 +25,12 @@ namespace AWS_S3_Storage
                     BucketName = bucketName,
                     Key = keyName,
                     FilePath = filePath,
-                  //  ContentType = "video/mp4"
+                    //  ContentType = "video/mp4"
                 };
 
                 PutObjectResponse response = await client.PutObjectAsync(putRequest);
-                
-               return response.HttpStatusCode;
+
+                return response.HttpStatusCode;
             }
             catch (Exception ex)
             {
@@ -38,6 +38,34 @@ namespace AWS_S3_Storage
             }
         }
 
+        public async Task<bool> DownloadFile(string keyName, string filePath)
+        {
+            
+            var client = new AmazonS3Client("AKIA2YNUHHPWK7JUWOGF", "D8Wpeg4WpCQB3PpOaMMhkCnBF9mt8cCrLoew2PA8", Amazon.RegionEndpoint.APSouth1);
 
+            try
+            {
+                GetObjectRequest getObjectRequest = new GetObjectRequest
+                {
+                    BucketName = bucketName,
+                    Key = keyName
+                };
+
+                using (var response = await client.GetObjectAsync(getObjectRequest))
+                {
+                    await response.WriteResponseStreamToFileAsync(filePath + @"\" + keyName+"."+ response.Headers.ContentType.Split("/")[1], false,new System.Threading.CancellationToken());
+                    
+                }
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+
+        }
     }
 }
