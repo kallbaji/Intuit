@@ -47,6 +47,7 @@ namespace iTube.Control
 
         public void BackPressed()
         {
+            App.listViewModel.GetVideo();
             playControl.BackPressed();
             CollapseEntireControl();
             tabControl.Visibility = Visibility.Visible;

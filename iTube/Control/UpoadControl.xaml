@@ -5,26 +5,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
               xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:iTube.Control"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <xctk:BusyIndicator IsBusy="{Binding IsUploadDone}" >
+     
     <Grid>
         <StackPanel Orientation="Vertical">
             <StackPanel  Orientation="Horizontal">
                 <Label HorizontalAlignment="Center"  VerticalAlignment="Center" Content="File Path   "/>
-                <TextBox x:Name="filePath" Width="500" Height="40" IsEnabled="False" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
+                <TextBox  x:Name="filePath" Width="500" Height="40" IsEnabled="False" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
                 <Button  Content="Choose File" Click="Button_Click_1"/>
             </StackPanel>
             <StackPanel  Orientation="Horizontal">
                 <Label HorizontalAlignment="Center"  VerticalAlignment="Center" Content="Thumbnail" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
-                <TextBox x:Name="tumbnail" Width="500" Height="40" materialDesign:BottomDashedLineAdorner.Brush="Black" IsEnabled="False"/>
+                <TextBox  x:Name="tumbnail" Width="500" Height="40" materialDesign:BottomDashedLineAdorner.Brush="Black" IsEnabled="False"/>
                 <Button Content="Choose File" Click="Button_Click"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label HorizontalAlignment="Center"  VerticalAlignment="Center" Content="Title          "/>
-                <TextBox Width="500" Height="40" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
+                <TextBox Text="{Binding Title, Mode=TwoWay,NotifyOnTargetUpdated=True}" Width="500" Height="40" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
             </StackPanel>
         </StackPanel>
-        <Button Grid.Row="1" Width="100">
+        <Button Grid.Row="1" Width="100" Command="{ Binding UploadCommand}">
             <materialDesign:PackIcon Kind="Upload"/>
         </Button>
         <Grid.RowDefinitions>
@@ -32,4 +35,6 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
     </Grid>
+       
+    </xctk:BusyIndicator>
 </UserControl>

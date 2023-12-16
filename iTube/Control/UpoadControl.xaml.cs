@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using iTube.ViewModel;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,20 +25,28 @@ namespace iTube.Control
         public UpoadControl()
         {
             InitializeComponent();
+            DataContext = new UploadControlViewModel();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
+
+            {
+                (DataContext as UploadControlViewModel).Tumbnail = openFileDialog.FileName;
                 tumbnail.Text = openFileDialog.FileName;
+            }
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
+            {
                 filePath.Text = openFileDialog.FileName;
+                (DataContext as UploadControlViewModel).FilePath = openFileDialog.FileName;
+            }
         }
     }
 }

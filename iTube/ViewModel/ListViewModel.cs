@@ -27,7 +27,7 @@ namespace iTube.ViewModel
 
         public void GetVideo()
         {
-
+            VideoList.Clear();
             dbHelper.OpenConnection();
 
             MySqlDataReader result = dbHelper.ExecuteReaderQuery(

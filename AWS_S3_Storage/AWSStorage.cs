@@ -1,4 +1,5 @@
-﻿using Amazon.S3;
+﻿using Amazon.Runtime.CredentialManagement;
+using Amazon.S3;
 using Amazon.S3.Model;
 using System;
 using System.Net;
@@ -9,15 +10,14 @@ namespace AWS_S3_Storage
     public class AWSStorage
     {
         private string bucketName = "intuitbuket";
-        private string keyName = "Remove_Filter.mp4";
-        private string filePath = @"C:\Users\432179\Desktop\WZInProgressIssue.mp4";
+        // private string keyName = "Remove_Filter.mp4";
+        //  private string filePath = @"C:\Users\432179\Desktop\WZInProgressIssue.mp4";
 
 
-
-        public async Task<HttpStatusCode> UploadFile()
+        public async Task<HttpStatusCode> UploadFile(string keyName,string filePath)
         {
-            var client = new AmazonS3Client(Amazon.RegionEndpoint.USEast1);
-
+            var client = new AmazonS3Client("AKIA2YNUHHPWK7JUWOGF", "D8Wpeg4WpCQB3PpOaMMhkCnBF9mt8cCrLoew2PA8", Amazon.RegionEndpoint.APSouth1);
+           
             try
             {
                 PutObjectRequest putRequest = new PutObjectRequest
@@ -25,10 +25,11 @@ namespace AWS_S3_Storage
                     BucketName = bucketName,
                     Key = keyName,
                     FilePath = filePath,
-                    ContentType = "video/mp4"
+                  //  ContentType = "video/mp4"
                 };
 
                 PutObjectResponse response = await client.PutObjectAsync(putRequest);
+                
                return response.HttpStatusCode;
             }
             catch (Exception ex)

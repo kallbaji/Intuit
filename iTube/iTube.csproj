@@ -14,11 +14,14 @@
 
   <ItemGroup>
     <PackageReference Include="Dragablz" Version="0.0.3.234" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
     <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+    <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AWS_S3_Storage\AWS_S3_Storage.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
   </ItemGroup>
 
