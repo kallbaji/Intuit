@@ -93,7 +93,7 @@ namespace iTube.Control
 
         private void ShowLoginDialog()
         {
-            MessageBoxResult rsltMessageBox = MessageBox.Show("로그인이 필요한 기능입니다.\n로그인 하시겠습니까?", "로그인 필요", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            MessageBoxResult rsltMessageBox = MessageBox.Show("Login to Leave comment?", "Login", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
             switch (rsltMessageBox)
             {

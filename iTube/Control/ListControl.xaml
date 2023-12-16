@@ -31,9 +31,9 @@
                                 </Label>
                                 <StackPanel Orientation="Horizontal" Margin="0, -5, 0, -10">
                                     <Label Content="{Binding ChannelProfile.ChannelName}" FontSize="11" Foreground="Gray" />
-                                    <Label Content="{Binding Views}" ContentStringFormat="조회수 {0}회" FontSize="11" Foreground="Gray"/>
+                                    <Label Content="{Binding Views}" ContentStringFormat="Total {0} Views" FontSize="11" Foreground="Gray"/>
                                 </StackPanel>
-                                <Label Content="{Binding Date}"  ContentStringFormat="yyyy. MM. dd" FontSize="11" Foreground="Gray" />
+                                <Label Content="{Binding Date}"  ContentStringFormat="dd.MM.yyyy" FontSize="11" Foreground="Gray" />
                             </StackPanel>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>

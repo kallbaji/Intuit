@@ -22,15 +22,9 @@
             </TabItem>
             <TabItem>
                 <TabItem.Header>
-                    <materialDesign:PackIcon Kind="Subscriptions" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    <materialDesign:PackIcon Kind="upload" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                 </TabItem.Header>
-                
-            </TabItem>
-            <TabItem>
-                <TabItem.Header>
-                    <materialDesign:PackIcon Kind="User" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                </TabItem.Header>
-                <TextBlock Text="Ask for any question!" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <control:UpoadControl/>
             </TabItem>
         </dragablz:TabablzControl>
         <local:PlayControl x:Name="playControl" Visibility="Collapsed" loginVisibilityHandler="playControl_loginVisibilityHandler"/>

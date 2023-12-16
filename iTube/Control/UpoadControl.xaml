@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="iTube.Control.UpoadControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:local="clr-namespace:iTube.Control"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <StackPanel  Orientation="Horizontal">
+                <Label HorizontalAlignment="Center"  VerticalAlignment="Center" Content="File Path   "/>
+                <TextBox x:Name="filePath" Width="500" Height="40" IsEnabled="False" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
+                <Button  Content="Choose File" Click="Button_Click_1"/>
+            </StackPanel>
+            <StackPanel  Orientation="Horizontal">
+                <Label HorizontalAlignment="Center"  VerticalAlignment="Center" Content="Thumbnail" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
+                <TextBox x:Name="tumbnail" Width="500" Height="40" materialDesign:BottomDashedLineAdorner.Brush="Black" IsEnabled="False"/>
+                <Button Content="Choose File" Click="Button_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Label HorizontalAlignment="Center"  VerticalAlignment="Center" Content="Title          "/>
+                <TextBox Width="500" Height="40" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
+            </StackPanel>
+        </StackPanel>
+        <Button Grid.Row="1" Width="100">
+            <materialDesign:PackIcon Kind="Upload"/>
+        </Button>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+    </Grid>
+</UserControl>
