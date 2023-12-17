@@ -15,6 +15,12 @@
                 <Button x:Name="Back" Background="{x:Null}" BorderBrush="{x:Null}" Visibility="Collapsed" Click="Back_Click" Margin="-10 0 0 0">
                     <materialDesign:PackIcon Kind="ArrowBack"/>
                 </Button>
+                <Button x:Name="Login" Background="{x:Null}" BorderBrush="{x:Null}" Visibility="Visible" Click="Login_Click" Margin="-10 0 0 0">
+                    <materialDesign:PackIcon Kind="Login"/>
+                </Button>
+                <Button x:Name="Logout" Background="{x:Null}" BorderBrush="{x:Null}" Visibility="Collapsed" Click="Logout_Click" Margin="-10 0 0 0">
+                    <materialDesign:PackIcon Kind="Logout"/>
+                </Button>
                 <TextBlock Margin="0 2 0 0" Text="Home" Foreground="White" FontSize="18" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
@@ -30,7 +36,7 @@
             </StackPanel>
         </Grid>
         <Grid Margin="0 45 0 0">
-            <control:MainControl x:Name="mainControl" backVisibility="MainControl_backVisibility"/>
+            <control:MainControl x:Name="mainControl" backVisibility="MainControl_backVisibility" logoutVisibility="mainControl_logoutVisibility"/>
         </Grid>
     </Grid>
 </Window>

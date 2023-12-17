@@ -73,7 +73,7 @@
                             <StackPanel Margin="5 -5 0 0">
                                 <StackPanel Orientation="Horizontal">
                                     <Label Content="{Binding ChannelProfile.ChannelName}"/>
-                                    <Label Content="{Binding Date}" ContentStringFormat="yyyy. MM. dd"/>
+                                    <Label Content="{Binding Date}" ContentStringFormat="dd.MM.yyyy"/>
                                 </StackPanel>
                                 <Label Content="{Binding Content}" Margin="0 -5 0 0 "/>
                             </StackPanel>

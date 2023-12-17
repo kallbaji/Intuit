@@ -44,7 +44,7 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!-- tell Dragablz tab control to use the Material Design theme -->
-            <Style TargetType="{x:Type dragablz:TabablzControl}" BasedOn="{StaticResource MaterialDesignTabablzControlStyle}" />
+            <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource MaterialDesignFilledTabControl}" />
             <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
                 <Setter Property="SnapsToDevicePixels" Value="true" />
                 <Setter Property="OverridesDefaultStyle" Value="true" />

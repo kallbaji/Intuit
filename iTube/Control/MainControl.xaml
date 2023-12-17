@@ -8,26 +8,30 @@
              mc:Ignorable="d"
              xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+               xmlns:converter="clr-namespace:iTube.Converter"
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converter:BoolToVisibilityConverter x:Key="boolToVisibility"/>
+    </UserControl.Resources>
     <Grid>
-        <dragablz:TabablzControl x:Name="tabControl">
-            <dragablz:TabablzControl.InterTabController>
+        <TabControl x:Name="tabControl">
+            <!--<dragablz:TabablzControl.InterTabController>
                 <dragablz:InterTabController/>
-            </dragablz:TabablzControl.InterTabController>
+            </dragablz:TabablzControl.InterTabController>-->
             <TabItem>
                 <TabItem.Header>
                     <materialDesign:PackIcon Kind="Home" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                 </TabItem.Header>
                 <control:ListControl PlayVideo="ListControl_PlayVideo"/>
             </TabItem>
-            <TabItem>
+            <TabItem x:Name="upload" Visibility="{Binding IsVisible, Converter={ StaticResource boolToVisibility}}">
                 <TabItem.Header>
                     <materialDesign:PackIcon Kind="upload" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                 </TabItem.Header>
                 <control:UpoadControl/>
             </TabItem>
-        </dragablz:TabablzControl>
+        </TabControl>
         <local:PlayControl x:Name="playControl" Visibility="Collapsed" loginVisibilityHandler="playControl_loginVisibilityHandler"/>
-        <local:LoginControl x:Name="loginControl" Visibility="Collapsed" Panel.ZIndex="1"/>
+        <local:LoginControl Background="DarkBlue" x:Name="loginControl" Visibility="Collapsed" Panel.ZIndex="1"/>
     </Grid>
 </UserControl>

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using MySql.Data.MySqlClient;
 
 namespace iTube.ViewModel
 {
@@ -19,6 +20,7 @@ namespace iTube.ViewModel
         private DBHelper dbHelper;
         private AWSStorage aWSStorage;
 
+       
         public RelayCommand DownloadCommand { get; set; }
         private ObservableCollection<Comment> commentList;
         public ObservableCollection<Comment> CommentList
@@ -145,7 +147,7 @@ namespace iTube.ViewModel
 
         public PlayViewModel()
         {
-            dbHelper = new DBHelper();
+            dbHelper = new  DBHelper();
             CommentList = new ObservableCollection<Comment>();
             DownloadCommand = new RelayCommand(OnDownloadCommand);
             aWSStorage = new AWSStorage();
@@ -166,7 +168,7 @@ namespace iTube.ViewModel
             {
                 Index = CurrentVideo.Index;
                 Title = CurrentVideo.Title;
-                ChannelProfile = CurrentVideo.ChannelProfile;
+                ChannelProfile = Utils.GetProfileByIdx(App.USER_IDX);
                 Date = CurrentVideo.Date;
                 Views = CurrentVideo.Views;
                 ChannelIndex = CurrentVideo.ChannelProfile.ChannelIndex;
@@ -201,29 +203,29 @@ namespace iTube.ViewModel
             CommentList.Clear();
             CommentCount = 0;
 
-            //MySqlDataReader result = dbHelper.ExecuteReaderQuery("SELECT idx, uid, content, date FROM comment WHERE vid = "+Index+";");
+            MySqlDataReader result = dbHelper.ExecuteReaderQuery("SELECT idx, uid, content, date FROM comment WHERE vid = " + Index + ";");
 
-            //while (result.Read())
-            //{
-            //    Comment comment = new Comment()
-            //    {
-            //        Index = Convert.ToInt32(result[0].ToString()),
-            //        Content = result[2].ToString(),
-            //        ChannelProfile = Utils.GetProfileByIdx(Convert.ToInt32(result[1].ToString())),
-            //        Date = (DateTime)result[3]
-            //    };
+            while (result.Read())
+            {
+                Comment comment = new Comment()
+                {
+                    Index = Convert.ToInt32(result[0].ToString()),
+                    Content = result[2].ToString(),
+                    ChannelProfile = Utils.GetProfileByIdx(Convert.ToInt32(result[1].ToString())),
+                    Date = (DateTime)result[3]
+                };
 
-            //    CommentList.Add(comment);
-            //    CommentCount++;
-            //}
-            //result.Close();
+                CommentList.Add(comment);
+                CommentCount++;
+            }
+            result.Close();
         }
 
         public void PostComment(int uid, string content)
         {
             dbHelper.OpenConnection();
-            dbHelper.ExecuteQuery(String.Format("INSERT INTO comment(vid, uid, content) VALUES({0}, {1}, \"{2}\");",
-                Index, uid, content));
+            dbHelper.ExecuteQuery(String.Format("INSERT INTO comment(vid, uid, content,date) VALUES({0}, {1}, \"{2}\",\"{3}\");",
+                Index, uid, content,DateTime.Now.ToString("yyyy-MM-dd H:mm:ss")));
 
             GetComment();
 
@@ -245,35 +247,33 @@ namespace iTube.ViewModel
             LikeCount = 0;
             DislikeCount = 0;
             VideoRate = Rate.NONE;
+            MySqlDataReader result = dbHelper.ExecuteReaderQuery("SELECT uid, score FROM rate WHERE vid = " + Index + ";");
+            while (result.Read())
+            {
+                Rate rate = (Rate)Convert.ToInt32(result[1].ToString());
+                int uid = Convert.ToInt32(result[0].ToString());
+                if (uid == App.USER_IDX && uid !=0)
+                {
+                    VideoRate = rate;
+                }
 
-            //MySqlDataReader result = dbHelper.ExecuteReaderQuery("SELECT uid, score FROM rate WHERE vid = "+Index+";");
-            //while (result.Read())
-            //{
-            //    Rate rate = (Rate)Convert.ToInt32(result[1].ToString());
-            //    int uid = Convert.ToInt32(result[0].ToString());
-            //    if (uid == App.USER_IDX)
-            //    {
-            //        VideoRate = rate;
-            //    }
-
-            //    switch (rate)
-            //    {
-            //        case Rate.LIKE:
-            //            LikeCount++;
-            //            break;
-            //        case Rate.DISLIKE:
-            //            DislikeCount++;
-            //            break;
-            //    }
-            //}
-            //result.Close();
-
+                switch (rate)
+                {
+                    case Rate.LIKE:
+                        LikeCount++;
+                        break;
+                    case Rate.DISLIKE:
+                        DislikeCount++;
+                        break;
+                }
+            }
+            result.Close();
         }
 
         public void RateVideo(Rate rate)
         {
             dbHelper.OpenConnection();
-            if (VideoRate == rate) // 좋아요or싫어요 삭제
+            if (VideoRate == rate) 
             {
                 ControlCount(rate, true);
                 dbHelper.ExecuteQuery(String.Format("DELETE FROM rate WHERE uid = '{0}' AND vid = '{1}';", App.USER_IDX, Index));
@@ -312,7 +312,7 @@ namespace iTube.ViewModel
                     DislikeCount--;
                     LikeCount++;
                 }
-                else // NONE일때
+                else
                 {
                     if (rate == Rate.LIKE)
                         LikeCount++;

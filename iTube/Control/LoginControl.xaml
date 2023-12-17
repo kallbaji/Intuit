@@ -6,7 +6,8 @@
              xmlns:local="clr-namespace:iTube.Control"
              xmlns:converter="clr-namespace:iTube.Converter"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             Height="400" Width="400"
+             d:DesignHeight="400" d:DesignWidth="400">
     <UserControl.Resources>
         <converter:BoolToVisibilityConverter x:Key="boolToVisibility"/>
     </UserControl.Resources>
@@ -14,19 +15,42 @@
         <Grid Grid.Row="0">
             <Image Source="/iTube;component/Resource/logo.png"/>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid  Grid.Row="1" Visibility="{Binding CreateVisible , Converter={StaticResource boolToVisibility}}">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid Margin="0 0 0 5">
-                    <TextBox Text="Email" Width="200" Foreground="Gray" Visibility="{Binding ElementName=emailBox, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
-                    <TextBox Name="emailBox"/>
+                    <TextBox Text="Email" Width="200" Foreground="White" Visibility="{Binding ElementName=emailBox1, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
+                    <TextBox Name="emailBox1" Foreground="White" Text="{Binding ID}" />
                 </Grid>
                 <Grid Margin="0 5 0 0">
-                    <TextBox Text="Password"  Foreground="Gray" Visibility="{Binding ElementName=passwordBox, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
-                    <TextBox Name="passwordBox"/>
+                    <TextBox Text="Password"  Foreground="White" Visibility="{Binding ElementName=passwordBox1, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
+                    <TextBox Name="passwordBox1" Foreground="White" Text="{Binding PWD}"/>
+                </Grid>
+                <Grid Margin="0 5 0 0">
+                    <TextBox Text="Name"  Foreground="White" Visibility="{Binding ElementName=nameBox1, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
+                    <TextBox Name="nameBox1" Foreground="White" Text="{Binding Name}"/>
                 </Grid>
             </StackPanel>
-            <Label Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Create account" Margin="20"/>
-            <Button Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Content="Next" Margin="20"/>
+           
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Login" Command="{Binding LoginPageCommand}"  Margin="20"/>
+                <Button Grid.Row="1" HorizontalAlignment="Center"  VerticalAlignment="Bottom" Content="Create account" Command="{Binding CreateCommand}" Margin="20"/>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="1" Visibility="{Binding LoginVisible , Converter={StaticResource boolToVisibility}}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid Margin="0 0 0 5">
+                    <TextBox Text="Email" Width="200" Foreground="White" Visibility="{Binding ElementName=emailBox, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
+                    <TextBox Name="emailBox" Foreground="White" Text="{Binding ID}" />
+                </Grid>
+                <Grid Margin="0 5 0 0">
+                    <TextBox Text="Password"  Foreground="White" Visibility="{Binding ElementName=passwordBox, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
+                    <TextBox Name="passwordBox" Foreground="White" Text="{Binding PWD}"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Login" Command="{Binding LoginCommand}"  Margin="20"/>
+                <Button Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Content="Create" Command="{Binding CreatePageCommand}"  Margin="20"/>
+            </StackPanel>
         </Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>

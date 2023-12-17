@@ -38,7 +38,7 @@ namespace iTube.ViewModel
             {
                 Video video = new Video()
                 {
-                    ChannelProfile = Utils.GetProfileByIdx(Convert.ToInt32(result[2].ToString())),
+                    ChannelProfile = Utils.GetProfileByIdx(Convert.ToInt32(result[2])),
 
                     Index = Convert.ToInt32(result[0].ToString()),
                     Title = result[1].ToString(),

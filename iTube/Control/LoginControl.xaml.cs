@@ -1,4 +1,5 @@
-﻿using System;
+﻿using iTube.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace iTube.Control
         public LoginControl()
         {
             InitializeComponent();
+            DataContext = new LoginControlViewModel();
         }
     }
 }

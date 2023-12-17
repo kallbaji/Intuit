@@ -26,10 +26,9 @@ namespace iTube
                     ChannelArt = CreateProfileImage(result[1].ToString())
                 };
                 result.Close();
-                dbHelper.CloseConnection();
-
                 return profile;
             }
+            dbHelper.CloseConnection();
             return null;
         }
 

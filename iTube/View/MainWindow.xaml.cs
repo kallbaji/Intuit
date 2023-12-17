@@ -1,4 +1,5 @@
-﻿using System;
+﻿using iTube.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,6 +62,28 @@ namespace iTube
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Maximized;
+        }
+
+        private void Logout_Click(object sender, RoutedEventArgs e)
+        {
+            App.USER_IDX = 1;
+            App.currrentProfile = Utils.GetProfileByIdx(1);
+            App.playViewModel.ChannelProfile = App.currrentProfile;
+            App.IS_LOGGED = false;
+            Logout.Visibility = Visibility.Collapsed;
+            (mainControl.DataContext as MainControlViewModel).IsVisible = false;
+            Login.Visibility = Visibility.Visible;
+        }
+
+        private void mainControl_logoutVisibility(Visibility visibility)
+        {
+            Logout.Visibility = visibility;
+        }
+
+        private void Login_Click(object sender, RoutedEventArgs e)
+        {
+            Login.Visibility = Visibility.Collapsed;
+            mainControl.loginControl.Visibility = Visibility.Visible;
         }
     }
 }

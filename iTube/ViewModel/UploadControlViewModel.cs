@@ -18,7 +18,7 @@ namespace iTube.ViewModel
         public UploadControlViewModel()
         {
             UploadCommand = new RelayCommand(OnUploadCommand, CanExecuteUploadCommand);
-            dbHelper = new DBHelper();
+            dbHelper = new  DBHelper(); ;
             aWSStorage = new AWSStorage();
         }
 

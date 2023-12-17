@@ -41,8 +41,9 @@ namespace iTube.Control
 
         public void PlayVideo(Video video)
         {
-            videoControl.PlayVideo(video.VideoLink);
             ViewModel.CurrentVideo = video;
+            videoControl.PlayVideo(video.VideoLink);
+            
         }
 
         public void BackPressed()

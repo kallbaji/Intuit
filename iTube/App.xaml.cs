@@ -1,4 +1,6 @@
-﻿using iTube.ViewModel;
+﻿using DAL;
+using iTube.Model;
+using iTube.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -20,14 +22,18 @@ namespace iTube
         public static Boolean IS_LOGGED = false;
         public static int USER_IDX = 1;
 
+        public static Profile currrentProfile = null;
+
         public static ListViewModel listViewModel = null;
         public static PlayViewModel playViewModel = null;
+        public static MainControlViewModel mainControlViewModel = null;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             listViewModel = new ListViewModel();
             playViewModel = new PlayViewModel();
             base.OnStartup(e);
+
         }
     }
 }
