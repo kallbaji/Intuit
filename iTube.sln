@@ -7,7 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "iTube", "iTube\iTube.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DAL", "DAL\DAL.csproj", "{B1E2D92D-6C23-4835-8555-47A6D938B2DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AWS_S3_Storage", "AWS_S3_Storage\AWS_S3_Storage.csproj", "{FC702E23-7D5B-40E3-BFFC-23DDED8C86BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AWS_S3_Storage", "AWS_S3_Storage\AWS_S3_Storage.csproj", "{FC702E23-7D5B-40E3-BFFC-23DDED8C86BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{117D3C17-5745-493B-A15F-86D139431CC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{98D04388-EDFE-4EEE-B627-2126A7A9D9CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{FC702E23-7D5B-40E3-BFFC-23DDED8C86BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC702E23-7D5B-40E3-BFFC-23DDED8C86BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC702E23-7D5B-40E3-BFFC-23DDED8C86BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{117D3C17-5745-493B-A15F-86D139431CC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{117D3C17-5745-493B-A15F-86D139431CC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{117D3C17-5745-493B-A15F-86D139431CC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{117D3C17-5745-493B-A15F-86D139431CC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98D04388-EDFE-4EEE-B627-2126A7A9D9CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98D04388-EDFE-4EEE-B627-2126A7A9D9CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98D04388-EDFE-4EEE-B627-2126A7A9D9CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98D04388-EDFE-4EEE-B627-2126A7A9D9CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
