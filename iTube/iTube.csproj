@@ -24,6 +24,8 @@
   <ItemGroup>
     <ProjectReference Include="..\AWS_S3_Storage\AWS_S3_Storage.csproj" />
     <ProjectReference Include="..\DAL\DAL.csproj" />
+    <ProjectReference Include="..\Model\Model.csproj" />
+    <ProjectReference Include="..\Utility\Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using iTube.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,7 @@ namespace iTube.Control
 
         public VideoControl()
         {
+            DataContext = new VideoControllerViewModel(PlayVideo, StopVideo);
             InitializeComponent();
             this.Loaded += VideoControl_Loaded;
         }
@@ -36,9 +38,8 @@ namespace iTube.Control
             VideoTimer.Tick += VideoTimer_Tick;
         }
 
-        public void PlayVideo(string filename)
+        public void PlayVideo()
         {
-            mediaPlayer.Source = new Uri(filename);
             mediaPlayer.Play();
         }
 
@@ -46,7 +47,6 @@ namespace iTube.Control
         {
             IsPlaying = false;
             ControlButton();
-            mediaPlayer.Source = null;
             mediaPlayer.Stop();
             mediaPlayer.Close();
         }

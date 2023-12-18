@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="iTube.Control.ListControl"
+﻿<UserControl x:Class="iTube.Control.UserVideoControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -18,27 +18,15 @@
                     <Grid Width="200">
                         <Image Source="{Binding Thumbnail}" Grid.Row="0" />
                         <Grid Grid.Row="1">
-                            <Ellipse Width="30" Height="30" Grid.Column="0" Fill="#FFBBBBBB" Margin="5 -15 0 0"/>
-                            <Ellipse Width="30" Height="30" Grid.Column="0" Margin="5 -15 0 0" >
-                                <Ellipse.Fill>
-                                    <ImageBrush ImageSource="{Binding ChannelProfile.ChannelArt, IsAsync=True}"  />
-                                </Ellipse.Fill>
-                            </Ellipse>
-                            
-                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Column="1" Margin="10 0 0 0">
+                            <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Bottom"  Margin="10 0 0 0">
                                 <Label Name="Label1" Width="180" HorizontalAlignment="Left"  Margin="0 5 0 0">
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding Title}"/>
+                                    <TextBlock TextWrapping="Wrap" Text="{Binding Title}"/>
                                 </Label>
                                 <StackPanel Orientation="Horizontal" Margin="0, -5, 0, -10">
-                                    <Label Content="{Binding ChannelProfile.ChannelName}" FontSize="11" Foreground="Gray" />
-                                    <Label Content="{Binding Views}" ContentStringFormat="Total {0} Views" FontSize="11" Foreground="Gray"/>
+                                   <Label Content="{Binding Views}" ContentStringFormat="Total {0} Views" FontSize="11" Foreground="Gray"/>
                                 </StackPanel>
                                 <Label Content="{Binding Date}"  ContentStringFormat="dd.MM.yyyy" FontSize="11" Foreground="Gray" />
                             </StackPanel>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="9*"/>
-                            </Grid.ColumnDefinitions>
                         </Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition/>

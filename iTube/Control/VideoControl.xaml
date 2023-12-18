@@ -9,7 +9,8 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid Height="300">
         <Border Background="Black" MouseEnter="mediaPlayer_MouseEnter" MouseLeave="mediaPlayer_MouseLeave" ></Border>
-        <MediaElement x:Name="mediaPlayer" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="Uniform" HorizontalAlignment="Stretch" MouseEnter="mediaPlayer_MouseEnter" MouseLeave="mediaPlayer_MouseLeave" MediaOpened="mediaPlayer_MediaOpened" />
+
+        <MediaElement x:Name="mediaPlayer" Source="{Binding FilenameUri}" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="Uniform" HorizontalAlignment="Stretch" MouseEnter="mediaPlayer_MouseEnter" MouseLeave="mediaPlayer_MouseLeave" MediaOpened="mediaPlayer_MediaOpened" />
         
         <Button x:Name="Control" Background="Transparent" BorderThickness="0" Width="60" Height="60" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" MouseEnter="mediaPlayer_MouseEnter" MouseLeave="mediaPlayer_MouseLeave" Click="Control_Click">
             <Grid Width="50" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center">

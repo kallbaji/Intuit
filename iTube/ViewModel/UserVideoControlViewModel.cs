@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO.Packaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,9 +13,9 @@ using Utility;
 
 namespace iTube.ViewModel
 {
-    public class ListViewModel : INotifyPropertyChanged
+   public class UserVideoControlViewModel : INotifyPropertyChanged
     {
-         public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -31,7 +29,7 @@ namespace iTube.ViewModel
             set
             {
                 selectedVideo = value;
-                MessageBus.Instance.Send<PlayVisibleMessage>(new PlayVisibleMessage(true,selectedVideo));
+                MessageBus.Instance.Send<PlayVisibleMessage>(new PlayVisibleMessage(true, selectedVideo));
                 MessageBus.Instance.Send<TabVisibleMessage>(new TabVisibleMessage(false));
                 MessageBus.Instance.Send<BackButtonVisibleMessage>(new BackButtonVisibleMessage(true));
                 MessageBus.Instance.Send<PlayVideoMessage>(new PlayVideoMessage(true, new Uri(selectedVideo.VideoLink)));
@@ -39,10 +37,17 @@ namespace iTube.ViewModel
                 NotifyPropertyChanged(nameof(SelectedVideo));
             }
         }
-        public ListViewModel()
+        public UserVideoControlViewModel()
         {
+            MessageBus.Instance.Register<UserVideoControlVisibleMessage>(this, OnUserVideoControlVisibleMessage);
             VideoList = new ObservableCollection<Video>();
             dbHelper = new DBHelper();
+            GetVideo();
+
+        }
+
+        private void OnUserVideoControlVisibleMessage(UserVideoControlVisibleMessage obj)
+        {
             GetVideo();
         }
 
@@ -53,7 +58,7 @@ namespace iTube.ViewModel
 
             MySqlDataReader result = dbHelper.ExecuteReaderQuery(
                 "SELECT " +
-                "idx, title, uploader, thumbnail, video, views, date_upload FROM video;"
+                "idx, title, uploader, thumbnail, video, views, date_upload FROM video WHERE uploader= " + App.USER_IDX + ";"
                 );
             while (result.Read())
             {
@@ -74,9 +79,10 @@ namespace iTube.ViewModel
                 VideoList.Add(video);
 
             }
-                result.Close();
-            
+            result.Close();
+
             dbHelper.CloseConnection();
         }
     }
 }
+

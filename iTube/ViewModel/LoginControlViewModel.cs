@@ -1,6 +1,6 @@
 ﻿using DAL;
 using GalaSoft.MvvmLight.Command;
-using iTube.Model;
+using Model;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Utility;
 
 namespace iTube.ViewModel
 {
@@ -20,7 +21,7 @@ namespace iTube.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string iD=string.Empty;
+        private string iD = string.Empty;
         public string ID
         {
             get => iD;
@@ -32,7 +33,7 @@ namespace iTube.ViewModel
                 CreateCommand.RaiseCanExecuteChanged();
             }
         }
-        private string pWD=string.Empty;
+        private string pWD = string.Empty;
         public string PWD
         {
             get => pWD;
@@ -56,7 +57,29 @@ namespace iTube.ViewModel
             }
         }
 
-        private bool loginVisible = true;
+        private bool loginPageVisible = true;
+        public bool LoginPageVisible
+        {
+            get => loginPageVisible;
+            set
+            {
+                loginPageVisible = value;
+                NotifyPropertyChanged(nameof(LoginPageVisible));
+            }
+        }
+
+        private bool createPageVisible = false;
+        public bool CreatePageVisible
+        {
+            get => createPageVisible;
+            set
+            {
+                createPageVisible = value;
+                NotifyPropertyChanged(nameof(CreatePageVisible));
+            }
+        }
+
+        private bool loginVisible = false;
         public bool LoginVisible
         {
             get => loginVisible;
@@ -84,7 +107,7 @@ namespace iTube.ViewModel
 
         public RelayCommand LoginCommand { get; set; }
 
-       
+
 
         public RelayCommand CreateCommand { get; set; }
 
@@ -96,27 +119,35 @@ namespace iTube.ViewModel
 
         public LoginControlViewModel()
         {
+            MessageBus.Instance.Register<LoginScreenVisible>(this, message => LoginVisible = message.IsEnabled);
             LoginCommand = new RelayCommand(OnLogin, CanExecuteLogin);
             CreateCommand = new RelayCommand(OnCreate, CanExecuteCreate);
             LoginPageCommand = new RelayCommand(OnLoginPage);
             CreatePageCommand = new RelayCommand(OnCreatePage);
-            dBHelper = new  DBHelper();
+            dBHelper = new DBHelper();
         }
 
         private void OnCreatePage()
         {
-            LoginVisible = false;
-            CreateVisible = true;
+            ID = string.Empty;
+            Name = string.Empty;
+            PWD = string.Empty;
+            LoginPageVisible = false;
+            CreatePageVisible = true;
 
-          
+
         }
 
         private void OnLoginPage()
         {
-            LoginVisible = true;
-            CreateVisible = false;
+            ID = string.Empty;
+            Name = string.Empty;
+            PWD = string.Empty;
+            LoginPageVisible = true;
+            CreatePageVisible = false;
 
         }
+
 
         private bool CanExecuteCreate()
         {
@@ -146,7 +177,7 @@ namespace iTube.ViewModel
                         ChannelName = result[1].ToString(),
                         ChannelArt = Utils.CreateProfileImage(result[2].ToString())
                     };
-                 
+
                 }
                 result.Close();
                 dBHelper.ExecuteQuery(String.Format("INSERT INTO Login(idx, uid, pwd) VALUES(\"{0}\", {1}, \"{2}\");",
@@ -155,7 +186,11 @@ namespace iTube.ViewModel
                 App.USER_IDX = App.currrentProfile.ChannelIndex;
                 App.mainControlViewModel.IsLogin = true;
                 App.IS_LOGGED = true;
-                App.mainControlViewModel.IsLogin = true;
+                MessageBus.Instance.Send(new LogoutEnableMessage(true));
+                MessageBus.Instance.Send(new UploadTabVisibleMessage(true));
+                LoginVisible = false;
+                MessageBus.Instance.Send(new UserVideoControlVisibleMessage(true, App.USER_IDX));
+                OnLoginPage();
                 dBHelper.CloseConnection();
             }
             catch (Exception ex)
@@ -193,14 +228,19 @@ namespace iTube.ViewModel
                     App.USER_IDX = App.currrentProfile.ChannelIndex;
                     App.mainControlViewModel.IsLogin = true;
                     App.IS_LOGGED = true;
-                    App.mainControlViewModel.IsLogin = true;
+                    LoginVisible = false;
+                    MessageBus.Instance.Send(new LogoutEnableMessage(true));
+                    LoginVisible = false;
+                    MessageBus.Instance.Send(new UploadTabVisibleMessage(true));
+                    MessageBus.Instance.Send(new UserVideoControlVisibleMessage(true,App.USER_IDX));
+                    OnLoginPage();
                 }
                 else
                 {
                     MessageBoxResult rsltMessageBox = MessageBox.Show("Incorrect Username or Password", "Login Failed !", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 dBHelper.CloseConnection();
-               
+
             }
             catch (Exception ex)
             {

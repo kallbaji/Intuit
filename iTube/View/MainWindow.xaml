@@ -7,18 +7,22 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
         xmlns:control="clr-namespace:iTube.Control" AllowsTransparency="True"
+        xmlns:converter="clr-namespace:iTube.Converter"
         mc:Ignorable="d" WindowStyle="None" ResizeMode="CanResizeWithGrip"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <converter:BoolToVisibilityConverter x:Key="boolToVisibility"/>
+    </Window.Resources>
     <Grid>
-        <Grid Height="45" VerticalAlignment="Top" Background="Red" MouseLeftButtonDown="Grid_MouseLeftButtonDown">
+        <Grid Height="45" VerticalAlignment="Top" Background="Red">
             <StackPanel Orientation="Horizontal"  VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20 0 0 0" >
-                <Button x:Name="Back" Background="{x:Null}" BorderBrush="{x:Null}" Visibility="Collapsed" Click="Back_Click" Margin="-10 0 0 0">
+                <Button x:Name="Back" Background="{x:Null}" BorderBrush="{x:Null}" Visibility="{Binding BackVisible ,Converter={StaticResource boolToVisibility}}" Command="{Binding BackCommand}" Margin="-10 0 0 0">
                     <materialDesign:PackIcon Kind="ArrowBack"/>
                 </Button>
-                <Button x:Name="Login" Background="{x:Null}" BorderBrush="{x:Null}" Visibility="Visible" Click="Login_Click" Margin="-10 0 0 0">
+                <Button x:Name="Login" Background="{x:Null}" BorderBrush="{x:Null}" Visibility="{Binding LoginVisible, Converter={StaticResource boolToVisibility}}" Command="{Binding LoginCommand}" Margin="-10 0 0 0">
                     <materialDesign:PackIcon Kind="Login"/>
                 </Button>
-                <Button x:Name="Logout" Background="{x:Null}" BorderBrush="{x:Null}" Visibility="Collapsed" Click="Logout_Click" Margin="-10 0 0 0">
+                <Button x:Name="Logout" Background="{x:Null}" Visibility="{Binding LogoutVisible, Converter={StaticResource boolToVisibility}}" Command="{Binding LogoutCommand}" BorderBrush="{x:Null}" Margin="-10 0 0 0">
                     <materialDesign:PackIcon Kind="Logout"/>
                 </Button>
                 <TextBlock Margin="0 2 0 0" Text="Home" Foreground="White" FontSize="18" />
@@ -36,7 +40,7 @@
             </StackPanel>
         </Grid>
         <Grid Margin="0 45 0 0">
-            <control:MainControl x:Name="mainControl" backVisibility="MainControl_backVisibility" logoutVisibility="mainControl_logoutVisibility"/>
+            <control:MainControl  x:Name="mainControl"/>
         </Grid>
     </Grid>
 </Window>

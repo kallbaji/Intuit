@@ -1,5 +1,5 @@
-﻿using iTube.Model;
-using iTube.ViewModel;
+﻿using iTube.ViewModel;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Utility;
 
 namespace iTube.Control
 {
@@ -23,9 +24,6 @@ namespace iTube.Control
     public partial class PlayControl : UserControl
     {
         private PlayViewModel ViewModel = null;
-
-        public delegate void LoginVisibilityHandler(Visibility v);
-        public event LoginVisibilityHandler loginVisibilityHandler;
 
         public PlayControl()
         {
@@ -39,19 +37,6 @@ namespace iTube.Control
             this.DataContext = this.ViewModel;
         }
 
-        public void PlayVideo(Video video)
-        {
-            ViewModel.CurrentVideo = video;
-            videoControl.PlayVideo(video.VideoLink);
-            
-        }
-
-        public void BackPressed()
-        {
-            videoControl.StopVideo();
-            ViewModel.CurrentVideo = null;
-        }
-
         private void CommentListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (CommentListView.SelectedItem != null)
@@ -59,7 +44,7 @@ namespace iTube.Control
                 Comment comment = (Comment)CommentListView.SelectedItem;
                 CommentListView.SelectedItem = null;
 
-                if(comment.ChannelProfile.ChannelIndex == App.USER_IDX)
+                if (comment.ChannelProfile.ChannelIndex == App.USER_IDX)
                 {
                     MessageBoxResult rsltMessageBox = MessageBox.Show("Are you sure to delete this comment?", "Delete comment", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
@@ -79,13 +64,13 @@ namespace iTube.Control
 
         private void commentBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Return && commentBox.Text.Trim() != string.Empty)
+            if (e.Key == Key.Return && commentBox.Text.Trim() != string.Empty)
             {
                 if (App.IS_LOGGED)
                     ViewModel.PostComment(App.USER_IDX, commentBox.Text);
                 else
                     ShowLoginDialog();
-                    
+
                 commentBox.Text = string.Empty;
 
                 Keyboard.ClearFocus();
@@ -99,7 +84,7 @@ namespace iTube.Control
             switch (rsltMessageBox)
             {
                 case MessageBoxResult.Yes:
-                    loginVisibilityHandler(Visibility.Visible);
+                    MessageBus.Instance.Send<LoginScreenVisible>(new LoginScreenVisible(true));
                     break;
             }
         }

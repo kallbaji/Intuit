@@ -1,7 +1,6 @@
 ﻿using AWS_S3_Storage;
 using DAL;
 using GalaSoft.MvvmLight.Command;
-using iTube.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,6 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using MySql.Data.MySqlClient;
+using Utility;
+using Model;
 
 namespace iTube.ViewModel
 {
@@ -20,7 +21,7 @@ namespace iTube.ViewModel
         private DBHelper dbHelper;
         private AWSStorage aWSStorage;
 
-       
+
         public RelayCommand DownloadCommand { get; set; }
         private ObservableCollection<Comment> commentList;
         public ObservableCollection<Comment> CommentList
@@ -147,10 +148,18 @@ namespace iTube.ViewModel
 
         public PlayViewModel()
         {
-            dbHelper = new  DBHelper();
+            MessageBus.Instance.Register<PlayVisibleMessage>(this, OnPlayVisibleMessageRecieved);
+            dbHelper = new DBHelper();
             CommentList = new ObservableCollection<Comment>();
             DownloadCommand = new RelayCommand(OnDownloadCommand);
             aWSStorage = new AWSStorage();
+        }
+
+        private void OnPlayVisibleMessageRecieved(PlayVisibleMessage obj)
+        {
+            PlayVisible = obj.IsEnabled;
+            CurrentVideo = obj.Video;
+
         }
 
         private async void OnDownloadCommand()
@@ -225,7 +234,7 @@ namespace iTube.ViewModel
         {
             dbHelper.OpenConnection();
             dbHelper.ExecuteQuery(String.Format("INSERT INTO comment(vid, uid, content,date) VALUES({0}, {1}, \"{2}\",\"{3}\");",
-                Index, uid, content,DateTime.Now.ToString("yyyy-MM-dd H:mm:ss")));
+                Index, uid, content, DateTime.Now.ToString("yyyy-MM-dd H:mm:ss")));
 
             GetComment();
 
@@ -252,7 +261,7 @@ namespace iTube.ViewModel
             {
                 Rate rate = (Rate)Convert.ToInt32(result[1].ToString());
                 int uid = Convert.ToInt32(result[0].ToString());
-                if (uid == App.USER_IDX && uid !=0)
+                if (uid == App.USER_IDX && uid != 0)
                 {
                     VideoRate = rate;
                 }
@@ -273,7 +282,7 @@ namespace iTube.ViewModel
         public void RateVideo(Rate rate)
         {
             dbHelper.OpenConnection();
-            if (VideoRate == rate) 
+            if (VideoRate == rate)
             {
                 ControlCount(rate, true);
                 dbHelper.ExecuteQuery(String.Format("DELETE FROM rate WHERE uid = '{0}' AND vid = '{1}';", App.USER_IDX, Index));
@@ -289,6 +298,17 @@ namespace iTube.ViewModel
                 VideoRate = rate;
             }
             dbHelper.CloseConnection();
+        }
+
+        private bool playVisible = false;
+        public bool PlayVisible
+        {
+            get => playVisible;
+            set
+            {
+                playVisible = value;
+                NotifyPropertyChanged(nameof(PlayVisible));
+            }
         }
 
         private void ControlCount(Rate rate, Boolean isRemove)

@@ -24,7 +24,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Label HorizontalAlignment="Center"  VerticalAlignment="Center" Content="Title          "/>
-                <TextBox Text="{Binding Title, Mode=TwoWay,NotifyOnTargetUpdated=True}" Width="500" Height="40" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
+                <TextBox Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="500" Height="40" materialDesign:BottomDashedLineAdorner.Brush="Black"/>
             </StackPanel>
         </StackPanel>
         <Button Grid.Row="1" Width="100" Command="{ Binding UploadCommand}">

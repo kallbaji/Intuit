@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Utility;
 
 namespace iTube.ViewModel
 {
@@ -18,7 +19,7 @@ namespace iTube.ViewModel
         public UploadControlViewModel()
         {
             UploadCommand = new RelayCommand(OnUploadCommand, CanExecuteUploadCommand);
-            dbHelper = new  DBHelper(); ;
+            dbHelper = new DBHelper(); ;
             aWSStorage = new AWSStorage();
         }
 
@@ -30,21 +31,23 @@ namespace iTube.ViewModel
         private string CreateURLS3(string key)
         {
 
-            return @"https://intuitbuket.s3.ap-south-1.amazonaws.com/"+ key;
-        
+            return @"https://intuitbuket.s3.ap-south-1.amazonaws.com/" + key;
+
         }
 
         private async void OnUploadCommand()
         {
+            MessageBus.Instance.Send<LogoutEnableMessage>(new LogoutEnableMessage(false));
             IsUploadDone = true;
-           await  aWSStorage.UploadFile(Title,FilePath);
-           await  aWSStorage.UploadFile(Title + "_Tumbnail", tumbnail);
+            await aWSStorage.UploadFile(Title, FilePath);
+            await aWSStorage.UploadFile(Title + "_Tumbnail", tumbnail);
             DateTime theDate = DateTime.Now;
-            
+
             dbHelper.OpenConnection();
-            dbHelper.ExecuteQuery(String.Format("INSERT INTO video(title, uploader, thumbnail,video,views,date_upload) VALUES(\"{0}\", 1, \"{1}\",\"{2}\",0,\'{3}\');", Title,CreateURLS3(Title+"_Tumbnail"),CreateURLS3(Title), theDate.ToString("yyyy-MM-dd H:mm:ss")));
+            dbHelper.ExecuteQuery(String.Format("INSERT INTO video(title, uploader, thumbnail,video,views,date_upload) VALUES(\"{0}\", " + App.USER_IDX + ", \"{1}\",\"{2}\",0,\'{3}\');", Title, CreateURLS3(Title + "_Tumbnail"), CreateURLS3(Title), theDate.ToString("yyyy-MM-dd H:mm:ss")));
             dbHelper.CloseConnection();
             IsUploadDone = false;
+            MessageBus.Instance.Send<LogoutEnableMessage>(new LogoutEnableMessage(true));
             App.listViewModel.GetVideo();
         }
 
@@ -56,7 +59,7 @@ namespace iTube.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string title=string.Empty;
+        private string title = string.Empty;
         public string Title
         {
             get => title;
@@ -65,10 +68,10 @@ namespace iTube.ViewModel
                 title = value;
                 NotifyPropertyChanged(nameof(Title));
                 UploadCommand.RaiseCanExecuteChanged();
-                
+
             }
         }
-        private string filePath=string.Empty;
+        private string filePath = string.Empty;
         public string FilePath
         {
             get => filePath;
@@ -92,8 +95,8 @@ namespace iTube.ViewModel
 
             }
         }
-        
-        private string tumbnail=string.Empty;
+
+        private string tumbnail = string.Empty;
         public string Tumbnail
         {
             get => tumbnail;

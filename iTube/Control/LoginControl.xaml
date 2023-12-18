@@ -15,19 +15,19 @@
         <Grid Grid.Row="0">
             <Image Source="/iTube;component/Resource/logo.png"/>
         </Grid>
-        <Grid  Grid.Row="1" Visibility="{Binding CreateVisible , Converter={StaticResource boolToVisibility}}">
+        <Grid  Grid.Row="1" Visibility="{Binding CreatePageVisible , Converter={StaticResource boolToVisibility}}">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid Margin="0 0 0 5">
                     <TextBox Text="Email" Width="200" Foreground="White" Visibility="{Binding ElementName=emailBox1, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
-                    <TextBox Name="emailBox1" Foreground="White" Text="{Binding ID}" />
+                    <TextBox Name="emailBox1" Foreground="White" Text="{Binding ID,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
                 <Grid Margin="0 5 0 0">
                     <TextBox Text="Password"  Foreground="White" Visibility="{Binding ElementName=passwordBox1, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
-                    <TextBox Name="passwordBox1" Foreground="White" Text="{Binding PWD}"/>
+                    <TextBox Name="passwordBox1"  Foreground="White"  Text="{Binding PWD,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
                 <Grid Margin="0 5 0 0">
                     <TextBox Text="Name"  Foreground="White" Visibility="{Binding ElementName=nameBox1, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
-                    <TextBox Name="nameBox1" Foreground="White" Text="{Binding Name}"/>
+                    <TextBox Name="nameBox1" Foreground="White" Text="{Binding Name,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
             </StackPanel>
            
@@ -36,15 +36,15 @@
                 <Button Grid.Row="1" HorizontalAlignment="Center"  VerticalAlignment="Bottom" Content="Create account" Command="{Binding CreateCommand}" Margin="20"/>
             </StackPanel>
         </Grid>
-        <Grid Grid.Row="1" Visibility="{Binding LoginVisible , Converter={StaticResource boolToVisibility}}">
+        <Grid Grid.Row="1" Visibility="{Binding LoginPageVisible , Converter={StaticResource boolToVisibility}}">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid Margin="0 0 0 5">
                     <TextBox Text="Email" Width="200" Foreground="White" Visibility="{Binding ElementName=emailBox, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
-                    <TextBox Name="emailBox" Foreground="White" Text="{Binding ID}" />
+                    <TextBox Name="emailBox" Foreground="White" Text="{Binding ID,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid>
                 <Grid Margin="0 5 0 0">
                     <TextBox Text="Password"  Foreground="White" Visibility="{Binding ElementName=passwordBox, Path=Text.IsEmpty, Converter={StaticResource boolToVisibility}}" />
-                    <TextBox Name="passwordBox" Foreground="White" Text="{Binding PWD}"/>
+                    <TextBox Name="passwordBox" Foreground="White" Text="{Binding PWD ,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                 </Grid>
             </StackPanel>
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">

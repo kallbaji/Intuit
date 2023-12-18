@@ -38,12 +38,13 @@
                     <SolidColorBrush x:Key="SecondaryAccentForegroundBrush" Color="{StaticResource Accent200Foreground}"/>
                 </ResourceDictionary>
 
-                <!-- Include the Dragablz Material Design style -->
-                <ResourceDictionary Source="pack://application:,,,/Dragablz;component/Themes/materialdesign.xaml"/>
+             
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <!-- tell Dragablz tab control to use the Material Design theme -->
+            <Style TargetType="{x:Type ScrollBar}">
+                <Setter Property="Background" Value="White"/>
+            </Style>
+         
             <Style TargetType="{x:Type TabControl}" BasedOn="{StaticResource MaterialDesignFilledTabControl}" />
             <Style x:Key="SliderRepeatButton" TargetType="RepeatButton">
                 <Setter Property="SnapsToDevicePixels" Value="true" />

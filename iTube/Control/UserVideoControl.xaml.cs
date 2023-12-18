@@ -1,6 +1,6 @@
-﻿using System;
+﻿using iTube.ViewModel;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,20 +17,14 @@ using System.Windows.Shapes;
 namespace iTube.Control
 {
     /// <summary>
-    /// Interaction logic for ListControl.xaml
+    /// Interaction logic for UserVideoControl.xaml
     /// </summary>
-    public partial class ListControl : UserControl
+    public partial class UserVideoControl : UserControl
     {
-        public ListControl()
+        public UserVideoControl()
         {
+            DataContext = new UserVideoControlViewModel();
             InitializeComponent();
-            this.Loaded += ListControl_Loaded;
         }
-
-        private void ListControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.DataContext = App.listViewModel;
-        }
-
     }
 }
