@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DAL;
+using iTube.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -23,13 +25,8 @@ namespace iTube.Control
     {
         public ListControl()
         {
+            DataContext = new ListViewModel(ViedoDBOperation.Instance);
             InitializeComponent();
-            this.Loaded += ListControl_Loaded;
-        }
-
-        private void ListControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            this.DataContext = App.listViewModel;
         }
 
     }

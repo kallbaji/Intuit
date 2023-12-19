@@ -1,7 +1,9 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Interface;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ using System.Windows;
 
 namespace DAL
 {
-    public class DBHelper
+    public class DBHelper : IDatabaseOperationInterface
     {
         private MySqlConnection Connection;
         private MySqlCommand Command;
@@ -46,7 +48,7 @@ namespace DAL
             Connection.Close();
         }
 
-        public MySqlDataReader ExecuteReaderQuery(string query)
+        public DbDataReader ExecuteReaderQuery(string query)
         {
             Command = new MySqlCommand(query, Connection);
             MySqlDataReader Result = Command.ExecuteReader();

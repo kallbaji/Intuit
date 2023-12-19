@@ -16,21 +16,18 @@ namespace iTube
     /// </summary>
     public partial class App : Application
     {
-        public static string SHORT_SERVER_URI = "localhost";
-        public static string SERVER_URI = "http://" + SHORT_SERVER_URI + "/itube";
-
-        public static Boolean IS_LOGGED = false;
+        public static bool IS_LOGGED = false;
         public static int USER_IDX = 1;
 
         public static Profile currrentProfile = null;
 
-        public static ListViewModel listViewModel = null;
+        //public static ListViewModel listViewModel = null;
         public static PlayViewModel playViewModel = null;
         public static MainControlViewModel mainControlViewModel = null;
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            listViewModel = new ListViewModel();
+            ViedoDBOperation.Instance.dbHelper = new DBHelper();
             playViewModel = new PlayViewModel();
             base.OnStartup(e);
 

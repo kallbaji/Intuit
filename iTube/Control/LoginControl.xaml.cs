@@ -1,4 +1,5 @@
-﻿using iTube.ViewModel;
+﻿using DAL;
+using iTube.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +24,10 @@ namespace iTube.Control
     {
         public LoginControl()
         {
+            LoginDBOperation.Instance.dBHelper=new DBHelper();
+            DataContext = new LoginControlViewModel(LoginDBOperation.Instance);
+
             InitializeComponent();
-            DataContext = new LoginControlViewModel();
-        }
+       }
     }
 }

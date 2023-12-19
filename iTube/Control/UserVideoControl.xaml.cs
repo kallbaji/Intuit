@@ -1,4 +1,5 @@
-﻿using iTube.ViewModel;
+﻿using DAL;
+using iTube.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace iTube.Control
     {
         public UserVideoControl()
         {
-            DataContext = new UserVideoControlViewModel();
+            DataContext = new UserVideoControlViewModel(ViedoDBOperation.Instance);
             InitializeComponent();
         }
     }

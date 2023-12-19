@@ -2,6 +2,7 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using Interface;
 using Microsoft.Win32.SafeHandles;
 using System;
 using System.IO;
@@ -10,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace AWS_S3_Storage
 {
-    public class AWSStorage
+    public class AWSStorage : IVideoOperationInterface
     {
         private string bucketName = "intuitbuket";
 
-        public async Task<HttpStatusCode> UploadFile(string keyName, string filePath)
+        public async Task<bool> UploadFile(string keyName, string filePath)
         {
             var client = new AmazonS3Client("AKIA2YNUHHPWK7JUWOGF", "D8Wpeg4WpCQB3PpOaMMhkCnBF9mt8cCrLoew2PA8", Amazon.RegionEndpoint.APSouth1);
 
@@ -30,15 +31,15 @@ namespace AWS_S3_Storage
 
                 PutObjectResponse response = await client.PutObjectAsync(putRequest);
 
-                return response.HttpStatusCode;
+                return true;
             }
             catch (Exception ex)
             {
-                return HttpStatusCode.NoContent;
+                return false;
             }
         }
 
-        public async Task<bool> DownloadFile(string keyName, string filePath)
+        public async Task<bool> DownloadFileAsync(string keyName, string filePath)
         {
             
             var client = new AmazonS3Client("AKIA2YNUHHPWK7JUWOGF", "D8Wpeg4WpCQB3PpOaMMhkCnBF9mt8cCrLoew2PA8", Amazon.RegionEndpoint.APSouth1);
@@ -66,6 +67,11 @@ namespace AWS_S3_Storage
             }
 
 
+        }
+
+        public bool DownloadFile(string keyName, string filePath)
+        {
+           return DownloadFileAsync(keyName, filePath).Result;
         }
     }
 }

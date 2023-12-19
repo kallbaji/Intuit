@@ -1,10 +1,12 @@
 ﻿using DAL;
+using Interface;
 using Model;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,8 +15,9 @@ using Utility;
 
 namespace iTube.ViewModel
 {
-   public class UserVideoControlViewModel : INotifyPropertyChanged
+    public class UserVideoControlViewModel : INotifyPropertyChanged
     {
+        private IVideoInterface VideoHelper = null;
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
@@ -37,13 +40,20 @@ namespace iTube.ViewModel
                 NotifyPropertyChanged(nameof(SelectedVideo));
             }
         }
-        public UserVideoControlViewModel()
+        public UserVideoControlViewModel(IVideoInterface videoInterface)
         {
+            VideoHelper = videoInterface;
             MessageBus.Instance.Register<UserVideoControlVisibleMessage>(this, OnUserVideoControlVisibleMessage);
+            MessageBus.Instance.Register<RefreshVideoMessage>(this, OnRefreshVideoMessage);
             VideoList = new ObservableCollection<Video>();
             dbHelper = new DBHelper();
             GetVideo();
 
+        }
+
+        private void OnRefreshVideoMessage(RefreshVideoMessage message)
+        {
+            GetVideo();
         }
 
         private void OnUserVideoControlVisibleMessage(UserVideoControlVisibleMessage obj)
@@ -51,37 +61,15 @@ namespace iTube.ViewModel
             GetVideo();
         }
 
-        public void GetVideo()
+        private void GetVideo()
         {
             VideoList.Clear();
-            dbHelper.OpenConnection();
-
-            MySqlDataReader result = dbHelper.ExecuteReaderQuery(
-                "SELECT " +
-                "idx, title, uploader, thumbnail, video, views, date_upload FROM video WHERE uploader= " + App.USER_IDX + ";"
-                );
-            while (result.Read())
+            foreach (Video video in VideoHelper.GetVideos(App.USER_IDX))
             {
-                Video video = new Video()
-                {
-                    ChannelProfile = Utils.GetProfileByIdx(Convert.ToInt32(result[2])),
-
-                    Index = Convert.ToInt32(result[0].ToString()),
-                    Title = result[1].ToString(),
-                    Thumbnail = new BitmapImage(new Uri(result[3].ToString())),
-                    VideoLink = result[4].ToString(),
-                    Views = Convert.ToInt32(result[5]),
-                    Date = (DateTime)result[6]
-                };
-
-
-
                 VideoList.Add(video);
 
             }
-            result.Close();
 
-            dbHelper.CloseConnection();
         }
     }
 }

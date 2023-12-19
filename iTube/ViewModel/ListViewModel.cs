@@ -1,10 +1,12 @@
 ﻿using DAL;
+using Interface;
 using Model;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Diagnostics;
 using System.IO.Packaging;
 using System.Linq;
@@ -17,13 +19,13 @@ namespace iTube.ViewModel
 {
     public class ListViewModel : INotifyPropertyChanged
     {
+        private IVideoInterface VideoHelper = null;
          public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public ObservableCollection<Video> VideoList { get; set; }
-        private DBHelper dbHelper;
         private Video selectedVideo = null;
         public Video SelectedVideo
         {
@@ -39,44 +41,28 @@ namespace iTube.ViewModel
                 NotifyPropertyChanged(nameof(SelectedVideo));
             }
         }
-        public ListViewModel()
+        public ListViewModel(IVideoInterface videoInterface)
         {
+
+            MessageBus.Instance.Register<RefreshVideoMessage>(this, OnRefreshVideoMessage);
             VideoList = new ObservableCollection<Video>();
-            dbHelper = new DBHelper();
+            VideoHelper = videoInterface;
             GetVideo();
         }
-
-        public void GetVideo()
+        private void OnRefreshVideoMessage(RefreshVideoMessage message)
+        {
+            GetVideo();
+        }
+        private void GetVideo()
         {
             VideoList.Clear();
-            dbHelper.OpenConnection();
-
-            MySqlDataReader result = dbHelper.ExecuteReaderQuery(
-                "SELECT " +
-                "idx, title, uploader, thumbnail, video, views, date_upload FROM video;"
-                );
-            while (result.Read())
+            foreach(Video video in VideoHelper.GetVideos())
             {
-                Video video = new Video()
-                {
-                    ChannelProfile = Utils.GetProfileByIdx(Convert.ToInt32(result[2])),
-
-                    Index = Convert.ToInt32(result[0].ToString()),
-                    Title = result[1].ToString(),
-                    Thumbnail = new BitmapImage(new Uri(result[3].ToString())),
-                    VideoLink = result[4].ToString(),
-                    Views = Convert.ToInt32(result[5]),
-                    Date = (DateTime)result[6]
-                };
-
-
-
-                VideoList.Add(video);
+                VideoList.Add(video);   
 
             }
-                result.Close();
+          
             
-            dbHelper.CloseConnection();
         }
     }
 }

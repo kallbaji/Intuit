@@ -13,6 +13,7 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using MySql.Data.MySqlClient;
 using Utility;
 using Model;
+using System.Data.Common;
 
 namespace iTube.ViewModel
 {
@@ -162,13 +163,13 @@ namespace iTube.ViewModel
 
         }
 
-        private async void OnDownloadCommand()
+        private  void OnDownloadCommand()
         {
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result == CommonFileDialogResult.Ok)
-                await aWSStorage.DownloadFile(Title, dialog.FileName);
+                 aWSStorage.DownloadFile(Title, dialog.FileName);
         }
 
         private void SetVideoInfo()
@@ -212,7 +213,7 @@ namespace iTube.ViewModel
             CommentList.Clear();
             CommentCount = 0;
 
-            MySqlDataReader result = dbHelper.ExecuteReaderQuery("SELECT idx, uid, content, date FROM comment WHERE vid = " + Index + ";");
+            DbDataReader result = dbHelper.ExecuteReaderQuery("SELECT idx, uid, content, date FROM comment WHERE vid = " + Index + ";");
 
             while (result.Read())
             {
@@ -256,7 +257,7 @@ namespace iTube.ViewModel
             LikeCount = 0;
             DislikeCount = 0;
             VideoRate = Rate.NONE;
-            MySqlDataReader result = dbHelper.ExecuteReaderQuery("SELECT uid, score FROM rate WHERE vid = " + Index + ";");
+            DbDataReader result = dbHelper.ExecuteReaderQuery("SELECT uid, score FROM rate WHERE vid = " + Index + ";");
             while (result.Read())
             {
                 Rate rate = (Rate)Convert.ToInt32(result[1].ToString());

@@ -1,10 +1,12 @@
 ﻿using DAL;
 using GalaSoft.MvvmLight.Command;
+using Interface;
 using Model;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +17,8 @@ namespace iTube.ViewModel
 {
     class LoginControlViewModel : INotifyPropertyChanged
     {
+
+        private ILoginInterface LoginHelper = null;
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
@@ -92,7 +96,6 @@ namespace iTube.ViewModel
 
         private string name = string.Empty;
 
-        private DBHelper dBHelper = null;
         public string Name
         {
             get => name;
@@ -117,14 +120,15 @@ namespace iTube.ViewModel
 
         public RelayCommand CreatePageCommand { get; set; }
 
-        public LoginControlViewModel()
+        public LoginControlViewModel(ILoginInterface loginInterface)
         {
+            LoginHelper = loginInterface;
             MessageBus.Instance.Register<LoginScreenVisible>(this, message => LoginVisible = message.IsEnabled);
             LoginCommand = new RelayCommand(OnLogin, CanExecuteLogin);
             CreateCommand = new RelayCommand(OnCreate, CanExecuteCreate);
             LoginPageCommand = new RelayCommand(OnLoginPage);
             CreatePageCommand = new RelayCommand(OnCreatePage);
-            dBHelper = new DBHelper();
+            
         }
 
         private void OnCreatePage()
@@ -161,27 +165,12 @@ namespace iTube.ViewModel
 
         private void OnCreate()
         {
-            try
+
+            var result = LoginHelper.OnCreate(ID, PWD, Name);
+            if (result.Item1)
             {
 
-
-                dBHelper.OpenConnection();
-                dBHelper.ExecuteQuery(String.Format("INSERT INTO user_table(nick,lid) VALUES(\"{0}\",\"{1}\");",
-                 Name, ID));
-                MySqlDataReader result = dBHelper.ExecuteReaderQuery("SELECT idx,nick, profile_pic FROM user_table WHERE lid = \"" + ID + "\"" + "AND nick = \"" + Name + "\";");
-                while (result.Read())
-                {
-                    App.currrentProfile = new Profile()
-                    {
-                        ChannelIndex = Convert.ToInt32(result[0]),
-                        ChannelName = result[1].ToString(),
-                        ChannelArt = Utils.CreateProfileImage(result[2].ToString())
-                    };
-
-                }
-                result.Close();
-                dBHelper.ExecuteQuery(String.Format("INSERT INTO Login(idx, uid, pwd) VALUES(\"{0}\", {1}, \"{2}\");",
-                 ID, App.currrentProfile.ChannelIndex, PWD));
+                App.currrentProfile = result.Item2;
                 App.playViewModel.ChannelProfile = App.currrentProfile;
                 App.USER_IDX = App.currrentProfile.ChannelIndex;
                 App.mainControlViewModel.IsLogin = true;
@@ -191,10 +180,15 @@ namespace iTube.ViewModel
                 LoginVisible = false;
                 MessageBus.Instance.Send(new UserVideoControlVisibleMessage(true, App.USER_IDX));
                 OnLoginPage();
-                dBHelper.CloseConnection();
+
             }
-            catch (Exception ex)
+            else
             {
+                App.currrentProfile = result.Item2;
+                App.USER_IDX = App.currrentProfile.ChannelIndex;
+                App.IS_LOGGED = false;
+                App.mainControlViewModel.IsLogin = false;
+                MessageBoxResult rsltMessageBox = MessageBox.Show("Create Account failed", "Create Failed !", MessageBoxButton.OK, MessageBoxImage.Information);
 
 
             }
@@ -202,51 +196,28 @@ namespace iTube.ViewModel
 
         private void OnLogin()
         {
-            try
+            var result = LoginHelper.OnLogin(ID, PWD);
+            if (result.Item1)
             {
-                dBHelper.OpenConnection();
-                MySqlDataReader result1 = dBHelper.ExecuteReaderQuery("SELECT uid FROM Login WHERE idx = \"" + ID + "\"" + "AND pwd = \"" + PWD + "\";");
-                if (result1.Read())
-                {
-                    int uid = Convert.ToInt32(result1[0]);
-                    result1.Close();
-
-                    MySqlDataReader result = dBHelper.ExecuteReaderQuery("SELECT idx,nick, profile_pic FROM user_table WHERE idx =" + uid);
-                    while (result.Read())
-                    {
-                        App.currrentProfile = new Profile()
-                        {
-                            ChannelIndex = Convert.ToInt32(result[0]),
-                            ChannelName = result[1].ToString(),
-                            ChannelArt = Utils.CreateProfileImage(result[2].ToString())
-                        };
-
-                    }
-
-                    App.USER_IDX = App.currrentProfile.ChannelIndex;
-                    App.playViewModel.ChannelProfile = App.currrentProfile;
-                    App.USER_IDX = App.currrentProfile.ChannelIndex;
-                    App.mainControlViewModel.IsLogin = true;
-                    App.IS_LOGGED = true;
-                    LoginVisible = false;
-                    MessageBus.Instance.Send(new LogoutEnableMessage(true));
-                    LoginVisible = false;
-                    MessageBus.Instance.Send(new UploadTabVisibleMessage(true));
-                    MessageBus.Instance.Send(new UserVideoControlVisibleMessage(true,App.USER_IDX));
-                    OnLoginPage();
-                }
-                else
-                {
-                    MessageBoxResult rsltMessageBox = MessageBox.Show("Incorrect Username or Password", "Login Failed !", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                dBHelper.CloseConnection();
-
+                App.currrentProfile=result.Item2;
+                App.USER_IDX = App.currrentProfile.ChannelIndex;
+                App.playViewModel.ChannelProfile = App.currrentProfile;
+                App.USER_IDX = App.currrentProfile.ChannelIndex;
+                App.mainControlViewModel.IsLogin = true;
+                App.IS_LOGGED = true;
+                LoginVisible = false;
+                MessageBus.Instance.Send(new LogoutEnableMessage(true));
+                LoginVisible = false;
+                MessageBus.Instance.Send(new UploadTabVisibleMessage(true));
+                MessageBus.Instance.Send(new UserVideoControlVisibleMessage(true, App.USER_IDX));
+                OnLoginPage();
             }
-            catch (Exception ex)
+            else
             {
-
-
+                MessageBoxResult rsltMessageBox = MessageBox.Show("Incorrect Username or Password", "Login Failed !", MessageBoxButton.OK, MessageBoxImage.Information);
             }
+
+
 
         }
     }

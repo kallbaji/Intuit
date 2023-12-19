@@ -39,8 +39,8 @@ namespace iTube.ViewModel
         {
             MessageBus.Instance.Send<LogoutEnableMessage>(new LogoutEnableMessage(false));
             IsUploadDone = true;
-            await aWSStorage.UploadFile(Title, FilePath);
-            await aWSStorage.UploadFile(Title + "_Tumbnail", tumbnail);
+           await  aWSStorage.UploadFile(Title, FilePath);
+           await  aWSStorage.UploadFile(Title + "_Tumbnail", tumbnail);
             DateTime theDate = DateTime.Now;
 
             dbHelper.OpenConnection();
@@ -48,7 +48,8 @@ namespace iTube.ViewModel
             dbHelper.CloseConnection();
             IsUploadDone = false;
             MessageBus.Instance.Send<LogoutEnableMessage>(new LogoutEnableMessage(true));
-            App.listViewModel.GetVideo();
+            MessageBus.Instance.Send<RefreshVideoMessage>(new RefreshVideoMessage(App.USER_IDX));
+
         }
 
         public RelayCommand UploadCommand { get; set; }

@@ -6,11 +6,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resource\ic_person.png" />
+    <None Remove="Resource\logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Model\Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resource\ic_person.png" />
+    <Resource Include="Resource\logo.png" />
   </ItemGroup>
 
 </Project>
