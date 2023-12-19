@@ -15,7 +15,7 @@ namespace DAL
     {
         public static Profile GetProfileByIdx(int uid)
         {
-            DBHelper dbHelper = new DBHelper();
+            DBHelper dbHelper =new DBHelper();
             Profile profile = null;
             try
             {

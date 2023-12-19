@@ -24,7 +24,7 @@ namespace iTube.Control
     {
         public LoginControl()
         {
-            LoginDBOperation.Instance.dBHelper=new DBHelper();
+            
             DataContext = new LoginControlViewModel(LoginDBOperation.Instance);
 
             InitializeComponent();

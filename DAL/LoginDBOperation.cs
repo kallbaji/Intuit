@@ -57,14 +57,14 @@ namespace DAL
             finally { dBHelper.CloseConnection(); }
         }
 
-        public Tuple<bool, Profile> OnLogin(string username, string password)
+        public  Tuple<bool, Profile> OnLogin(string username, string password)
         {
             Profile currrentProfile = Utils.GetProfileByIdx(1);
             bool result = false;
             try
             {
                 dBHelper.OpenConnection();
-                DbDataReader result1 = dBHelper.ExecuteReaderQuery("SELECT uid FROM Login WHERE idx = \"" + username + "\"" + "AND pwd = \"" + password + "\";");
+                DbDataReader result1 =    dBHelper.ExecuteReaderQuery("SELECT uid FROM Login WHERE idx = \"" + username + "\"" + "AND pwd = \"" + password + "\";");
                 if (result1.Read())
                 {
                     result = true;

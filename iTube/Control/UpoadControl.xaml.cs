@@ -1,4 +1,5 @@
-﻿using iTube.ViewModel;
+﻿using DAL;
+using iTube.ViewModel;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace iTube.Control
         public UpoadControl()
         {
             InitializeComponent();
-            DataContext = new UploadControlViewModel();
+            DataContext = new UploadControlViewModel(UploadDBOperation.Instance);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

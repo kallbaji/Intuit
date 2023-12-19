@@ -14,15 +14,14 @@ using MySql.Data.MySqlClient;
 using Utility;
 using Model;
 using System.Data.Common;
+using Interface;
+using System.Windows;
 
 namespace iTube.ViewModel
 {
     public class PlayViewModel : INotifyPropertyChanged
     {
-        private DBHelper dbHelper;
-        private AWSStorage aWSStorage;
-
-
+        IViedoInfoInterface viedoInfoHelper = null;
         public RelayCommand DownloadCommand { get; set; }
         private ObservableCollection<Comment> commentList;
         public ObservableCollection<Comment> CommentList
@@ -90,8 +89,8 @@ namespace iTube.ViewModel
             }
         }
 
-        private Rate videoRate;
-        public Rate VideoRate
+        private RateEnum videoRate;
+        public RateEnum VideoRate
         {
             get => videoRate;
             set
@@ -147,13 +146,33 @@ namespace iTube.ViewModel
         }
         #endregion
 
-        public PlayViewModel()
+        public PlayViewModel(IViedoInfoInterface viedoInfoInterface)
         {
+            viedoInfoHelper = viedoInfoInterface;
             MessageBus.Instance.Register<PlayVisibleMessage>(this, OnPlayVisibleMessageRecieved);
-            dbHelper = new DBHelper();
+            MessageBus.Instance.Register<ResetVideoRateMessage>(this, OnResetVideoRateMessageRecieved);
+            
             CommentList = new ObservableCollection<Comment>();
             DownloadCommand = new RelayCommand(OnDownloadCommand);
-            aWSStorage = new AWSStorage();
+        }
+
+        private void OnResetVideoRateMessageRecieved(ResetVideoRateMessage message)
+        {
+            ChannelProfile = Utils.GetProfileByIdx(App.USER_IDX);
+            if (App.USER_IDX != 1)
+            {
+                
+                
+                videoRate = viedoInfoHelper.GetRate(Index, App.USER_IDX); 
+            
+            
+            }
+            else { 
+                VideoRate = RateEnum.NONE;
+            
+            
+            }
+            
         }
 
         private void OnPlayVisibleMessageRecieved(PlayVisibleMessage obj)
@@ -163,13 +182,24 @@ namespace iTube.ViewModel
 
         }
 
-        private  void OnDownloadCommand()
+        private async void OnDownloadCommand()
         {
             var dialog = new CommonOpenFileDialog();
             dialog.IsFolderPicker = true;
             CommonFileDialogResult result = dialog.ShowDialog();
             if (result == CommonFileDialogResult.Ok)
-                 aWSStorage.DownloadFile(Title, dialog.FileName);
+            {
+                if (await viedoInfoHelper.DownloadFile(Title, dialog.FileName))
+                {
+                    MessageBoxResult rsltMessageBox = MessageBox.Show("Download Sucessfull", "Download", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                }
+                else
+                {
+                    MessageBoxResult rsltMessageBox = MessageBox.Show("Download Failed!", "Download", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                }
+            }
         }
 
         private void SetVideoInfo()
@@ -183,11 +213,11 @@ namespace iTube.ViewModel
                 Views = CurrentVideo.Views;
                 ChannelIndex = CurrentVideo.ChannelProfile.ChannelIndex;
 
-                dbHelper.OpenConnection();
+                viedoInfoHelper.dbHelper.OpenConnection();
                 GetComment();
                 GetRate();
                 AddViewCount();
-                dbHelper.CloseConnection();
+                viedoInfoHelper.dbHelper.CloseConnection();
             }
             else
             {
@@ -202,8 +232,7 @@ namespace iTube.ViewModel
 
         private void AddViewCount()
         {
-            dbHelper.ExecuteQuery("UPDATE video SET views = " + (Views + 1) + " WHERE idx = " + Index + ";");
-
+            viedoInfoHelper.AddViewCount(Views, Index);
             this.Views++;
             CurrentVideo.Views++;
         }
@@ -213,92 +242,76 @@ namespace iTube.ViewModel
             CommentList.Clear();
             CommentCount = 0;
 
-            DbDataReader result = dbHelper.ExecuteReaderQuery("SELECT idx, uid, content, date FROM comment WHERE vid = " + Index + ";");
-
-            while (result.Read())
+            foreach (var comment in viedoInfoHelper.GetComments(Index))
             {
-                Comment comment = new Comment()
-                {
-                    Index = Convert.ToInt32(result[0].ToString()),
-                    Content = result[2].ToString(),
-                    ChannelProfile = Utils.GetProfileByIdx(Convert.ToInt32(result[1].ToString())),
-                    Date = (DateTime)result[3]
-                };
-
-                CommentList.Add(comment);
+                commentList.Add(comment);
                 CommentCount++;
             }
-            result.Close();
         }
 
         public void PostComment(int uid, string content)
         {
-            dbHelper.OpenConnection();
-            dbHelper.ExecuteQuery(String.Format("INSERT INTO comment(vid, uid, content,date) VALUES({0}, {1}, \"{2}\",\"{3}\");",
-                Index, uid, content, DateTime.Now.ToString("yyyy-MM-dd H:mm:ss")));
+            viedoInfoHelper.dbHelper.OpenConnection();
+            viedoInfoHelper.PostComment(uid, content, Index);
 
             GetComment();
 
-            dbHelper.CloseConnection();
+            viedoInfoHelper.dbHelper.CloseConnection();
         }
 
         public void DeleteComment(int cid)
         {
-            dbHelper.OpenConnection();
-            dbHelper.ExecuteQuery("DELETE FROM comment WHERE idx = " + cid + ";");
+            viedoInfoHelper.dbHelper.OpenConnection();
+            viedoInfoHelper.DeleteComment(cid);
 
             GetComment();
 
-            dbHelper.CloseConnection();
+            viedoInfoHelper.dbHelper.CloseConnection();
         }
 
         private void GetRate()
         {
             LikeCount = 0;
             DislikeCount = 0;
-            VideoRate = Rate.NONE;
-            DbDataReader result = dbHelper.ExecuteReaderQuery("SELECT uid, score FROM rate WHERE vid = " + Index + ";");
-            while (result.Read())
+            VideoRate = RateEnum.NONE;
+            List<Rate> rates = viedoInfoHelper.GetRate(Index);
+            foreach (Rate item in rates)
             {
-                Rate rate = (Rate)Convert.ToInt32(result[1].ToString());
-                int uid = Convert.ToInt32(result[0].ToString());
-                if (uid == App.USER_IDX && uid != 0)
+                if (item.UID == App.USER_IDX && item.UID != 1)
                 {
-                    VideoRate = rate;
+                    VideoRate = item.RateEnum;
                 }
 
-                switch (rate)
+                switch (item.RateEnum)
                 {
-                    case Rate.LIKE:
+                    case RateEnum.LIKE:
                         LikeCount++;
                         break;
-                    case Rate.DISLIKE:
+                    case RateEnum.DISLIKE:
                         DislikeCount++;
                         break;
                 }
             }
-            result.Close();
+
         }
 
-        public void RateVideo(Rate rate)
+        public void RateVideo(RateEnum rate)
         {
-            dbHelper.OpenConnection();
+            viedoInfoHelper.dbHelper.OpenConnection();
             if (VideoRate == rate)
             {
                 ControlCount(rate, true);
-                dbHelper.ExecuteQuery(String.Format("DELETE FROM rate WHERE uid = '{0}' AND vid = '{1}';", App.USER_IDX, Index));
-
-                VideoRate = Rate.NONE;
+                viedoInfoHelper.DeleteRate(App.USER_IDX, Index);
+                VideoRate = RateEnum.NONE;
             }
             else
             {
                 ControlCount(rate, false);
-                dbHelper.ExecuteQuery(String.Format("DELETE FROM rate WHERE uid = '{0}' AND vid = '{1}';", App.USER_IDX, Index));
-                dbHelper.ExecuteQuery(String.Format("INSERT INTO rate(uid, vid, score) VALUES({0},{1},{2});", App.USER_IDX, Index, (int)rate));
-
+                viedoInfoHelper.DeleteRate(App.USER_IDX, Index);
+                viedoInfoHelper.InsertRate(App.USER_IDX, Index, (int)rate);
                 VideoRate = rate;
             }
-            dbHelper.CloseConnection();
+            viedoInfoHelper.dbHelper.CloseConnection();
         }
 
         private bool playVisible = false;
@@ -312,30 +325,30 @@ namespace iTube.ViewModel
             }
         }
 
-        private void ControlCount(Rate rate, Boolean isRemove)
+        private void ControlCount(RateEnum rate, Boolean isRemove)
         {
             if (isRemove)
             {
-                if (VideoRate == Rate.LIKE)
+                if (VideoRate == RateEnum.LIKE)
                     LikeCount--;
-                else if (VideoRate == Rate.DISLIKE)
+                else if (VideoRate == RateEnum.DISLIKE)
                     DislikeCount--;
             }
             else
             {
-                if (VideoRate == Rate.LIKE)
+                if (VideoRate == RateEnum.LIKE)
                 {
                     LikeCount--;
                     DislikeCount++;
                 }
-                else if (VideoRate == Rate.DISLIKE)
+                else if (VideoRate == RateEnum.DISLIKE)
                 {
                     DislikeCount--;
                     LikeCount++;
                 }
                 else
                 {
-                    if (rate == Rate.LIKE)
+                    if (rate == RateEnum.LIKE)
                         LikeCount++;
                     else
                         DislikeCount++;
@@ -348,11 +361,5 @@ namespace iTube.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-    public enum Rate
-    {
-        LIKE = 1,
-        NONE = 0,
-        DISLIKE = -1
     }
 }

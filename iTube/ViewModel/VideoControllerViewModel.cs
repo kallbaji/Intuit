@@ -46,6 +46,7 @@ namespace iTube.ViewModel
 
         private void OnPlayVideoMessageRecieved(PlayVideoMessage obj)
         {
+            MessageBus.Instance.Send<RefreshVideoMessage>(new RefreshVideoMessage(App.USER_IDX));
             FilenameUri = obj.FileURL;
             playVideoCallBackHandler?.Invoke();
         }

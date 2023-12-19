@@ -1,4 +1,5 @@
-﻿using DAL;
+﻿using AWS_S3_Storage;
+using DAL;
 using iTube.ViewModel;
 using Model;
 using System;
@@ -18,17 +19,20 @@ namespace iTube
     {
         public static bool IS_LOGGED = false;
         public static int USER_IDX = 1;
-
         public static Profile currrentProfile = null;
 
-        //public static ListViewModel listViewModel = null;
-        public static PlayViewModel playViewModel = null;
-        public static MainControlViewModel mainControlViewModel = null;
+
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            ;
+            var awsHelper = AWSStorage.Instance;
             ViedoDBOperation.Instance.dbHelper = new DBHelper();
-            playViewModel = new PlayViewModel();
+            UploadDBOperation.Instance.dbHelper = new DBHelper();
+            UploadDBOperation.Instance.uploadHelper = awsHelper;
+            LoginDBOperation.Instance.dBHelper = new DBHelper();
+            VideoInfoDBOperation.Instance.dbHelper = new DBHelper();
+            VideoInfoDBOperation.Instance.downloadHelper = awsHelper;
             base.OnStartup(e);
 
         }

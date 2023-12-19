@@ -1,4 +1,5 @@
-﻿using iTube.ViewModel;
+﻿using DAL;
+using iTube.ViewModel;
 using Model;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace iTube.Control
 
         private void PlayControl_Loaded(object sender, RoutedEventArgs e)
         {
-            this.ViewModel = App.playViewModel;
+            this.ViewModel = new PlayViewModel(VideoInfoDBOperation.Instance);
             this.DataContext = this.ViewModel;
         }
 
@@ -91,7 +92,7 @@ namespace iTube.Control
 
         private void Rate_Click(object sender, RoutedEventArgs e)
         {
-            Rate type = (Rate)Enum.Parse(typeof(Rate), ((Button)sender).Name);
+           RateEnum type = (RateEnum)Enum.Parse(typeof(RateEnum), ((Button)sender).Name);
 
             ViewModel.RateVideo(type);
         }

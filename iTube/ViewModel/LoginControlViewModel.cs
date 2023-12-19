@@ -60,6 +60,17 @@ namespace iTube.ViewModel
                 NotifyPropertyChanged(nameof(CreateVisible));
             }
         }
+        private bool isTaskDone = false;
+        public bool IsTaskDone
+        {
+            get => isTaskDone;
+            set
+            {
+                isTaskDone = value;
+                NotifyPropertyChanged(nameof(IsTaskDone));
+            }
+        }
+
 
         private bool loginPageVisible = true;
         public bool LoginPageVisible
@@ -128,7 +139,7 @@ namespace iTube.ViewModel
             CreateCommand = new RelayCommand(OnCreate, CanExecuteCreate);
             LoginPageCommand = new RelayCommand(OnLoginPage);
             CreatePageCommand = new RelayCommand(OnCreatePage);
-            
+
         }
 
         private void OnCreatePage()
@@ -163,22 +174,21 @@ namespace iTube.ViewModel
             return !string.IsNullOrEmpty(ID) && !string.IsNullOrEmpty(PWD);
         }
 
-        private void OnCreate()
+        private async void OnCreate()
         {
-
-            var result = LoginHelper.OnCreate(ID, PWD, Name);
+            IsTaskDone = true;
+            var result = await Task.Run(()=> LoginHelper.OnCreate(ID, PWD, Name));
             if (result.Item1)
             {
 
                 App.currrentProfile = result.Item2;
-                App.playViewModel.ChannelProfile = App.currrentProfile;
                 App.USER_IDX = App.currrentProfile.ChannelIndex;
-                App.mainControlViewModel.IsLogin = true;
                 App.IS_LOGGED = true;
                 MessageBus.Instance.Send(new LogoutEnableMessage(true));
                 MessageBus.Instance.Send(new UploadTabVisibleMessage(true));
                 LoginVisible = false;
                 MessageBus.Instance.Send(new UserVideoControlVisibleMessage(true, App.USER_IDX));
+                MessageBus.Instance.Send(new ResetVideoRateMessage(App.USER_IDX));
                 OnLoginPage();
 
             }
@@ -187,29 +197,29 @@ namespace iTube.ViewModel
                 App.currrentProfile = result.Item2;
                 App.USER_IDX = App.currrentProfile.ChannelIndex;
                 App.IS_LOGGED = false;
-                App.mainControlViewModel.IsLogin = false;
                 MessageBoxResult rsltMessageBox = MessageBox.Show("Create Account failed", "Create Failed !", MessageBoxButton.OK, MessageBoxImage.Information);
 
 
             }
+            IsTaskDone = false;
         }
 
-        private void OnLogin()
+        private async  void OnLogin()
         {
-            var result = LoginHelper.OnLogin(ID, PWD);
+            IsTaskDone = true;
+            var result = await Task.Run(() => LoginHelper.OnLogin(ID, PWD));
             if (result.Item1)
             {
-                App.currrentProfile=result.Item2;
+                App.currrentProfile = result.Item2;
                 App.USER_IDX = App.currrentProfile.ChannelIndex;
-                App.playViewModel.ChannelProfile = App.currrentProfile;
                 App.USER_IDX = App.currrentProfile.ChannelIndex;
-                App.mainControlViewModel.IsLogin = true;
                 App.IS_LOGGED = true;
                 LoginVisible = false;
                 MessageBus.Instance.Send(new LogoutEnableMessage(true));
                 LoginVisible = false;
                 MessageBus.Instance.Send(new UploadTabVisibleMessage(true));
                 MessageBus.Instance.Send(new UserVideoControlVisibleMessage(true, App.USER_IDX));
+                MessageBus.Instance.Send(new ResetVideoRateMessage(App.USER_IDX));
                 OnLoginPage();
             }
             else
@@ -217,7 +227,7 @@ namespace iTube.ViewModel
                 MessageBoxResult rsltMessageBox = MessageBox.Show("Incorrect Username or Password", "Login Failed !", MessageBoxButton.OK, MessageBoxImage.Information);
             }
 
-
+            IsTaskDone = false;
 
         }
     }

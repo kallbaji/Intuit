@@ -9,7 +9,7 @@ namespace Interface
 {
     public interface ILoginInterface
     {
-        Tuple<bool,Profile> OnCreate(string username, string password, string name);
-        Tuple<bool,Profile> OnLogin(string username, string password);
+        Tuple<bool, Profile> OnCreate(string username, string password, string name);
+        Tuple<bool, Profile> OnLogin(string username, string password);
     }
 }

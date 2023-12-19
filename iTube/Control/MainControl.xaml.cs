@@ -25,7 +25,6 @@ namespace iTube.Control
          public MainControl()
         {
             DataContext = new MainControlViewModel();
-            App.mainControlViewModel = this.DataContext as MainControlViewModel;
             InitializeComponent();
           
         }

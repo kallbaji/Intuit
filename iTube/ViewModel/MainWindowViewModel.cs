@@ -44,12 +44,12 @@ namespace iTube.ViewModel
         {
             App.USER_IDX = 1;
             App.currrentProfile = Utils.GetProfileByIdx(1);
-            App.playViewModel.ChannelProfile = App.currrentProfile;
             App.IS_LOGGED = false;
             LogoutVisible = false;
             MessageBus.Instance.Send(new LoginScreenVisible(false));
             MessageBus.Instance.Send(new UploadTabVisibleMessage(false));
             MessageBus.Instance.Send(new UserVideoControlVisibleMessage(false, App.USER_IDX));
+            MessageBus.Instance.Send(new ResetVideoRateMessage(App.USER_IDX));
             MessageBus.Instance.Send(new SelectedTabMessage(0));
             LoginVisible = true;
         }
@@ -58,7 +58,8 @@ namespace iTube.ViewModel
         {
             LoginVisible = false;
             MessageBus.Instance.Send<LoginScreenVisible>(new LoginScreenVisible(true));
-            
+           
+
         }
 
         public RelayCommand LoginCommand { get; set; }

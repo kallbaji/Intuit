@@ -24,7 +24,6 @@ namespace iTube.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public ObservableCollection<Video> VideoList { get; set; }
-        private DBHelper dbHelper;
         private Video selectedVideo = null;
         public Video SelectedVideo
         {
@@ -46,7 +45,6 @@ namespace iTube.ViewModel
             MessageBus.Instance.Register<UserVideoControlVisibleMessage>(this, OnUserVideoControlVisibleMessage);
             MessageBus.Instance.Register<RefreshVideoMessage>(this, OnRefreshVideoMessage);
             VideoList = new ObservableCollection<Video>();
-            dbHelper = new DBHelper();
             GetVideo();
 
         }

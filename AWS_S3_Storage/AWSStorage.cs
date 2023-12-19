@@ -13,6 +13,11 @@ namespace AWS_S3_Storage
 {
     public class AWSStorage : IVideoOperationInterface
     {
+        public static readonly AWSStorage Instance = new AWSStorage();
+        private AWSStorage()
+        {
+                
+        }
         private string bucketName = "intuitbuket";
 
         public async Task<bool> UploadFile(string keyName, string filePath)
@@ -39,7 +44,7 @@ namespace AWS_S3_Storage
             }
         }
 
-        public async Task<bool> DownloadFileAsync(string keyName, string filePath)
+        public async Task<bool> DownloadFile(string keyName, string filePath)
         {
             
             var client = new AmazonS3Client("AKIA2YNUHHPWK7JUWOGF", "D8Wpeg4WpCQB3PpOaMMhkCnBF9mt8cCrLoew2PA8", Amazon.RegionEndpoint.APSouth1);
@@ -69,9 +74,11 @@ namespace AWS_S3_Storage
 
         }
 
-        public bool DownloadFile(string keyName, string filePath)
+        public string CreateURLS3(string key)
         {
-           return DownloadFileAsync(keyName, filePath).Result;
+
+            return @"https://intuitbuket.s3.ap-south-1.amazonaws.com/" + key;
+
         }
     }
 }

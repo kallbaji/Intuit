@@ -1,12 +1,14 @@
 ﻿using AWS_S3_Storage;
 using DAL;
 using GalaSoft.MvvmLight.Command;
+using Interface;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using Utility;
 
@@ -14,13 +16,11 @@ namespace iTube.ViewModel
 {
     class UploadControlViewModel : INotifyPropertyChanged
     {
-        private DBHelper dbHelper;
-        private AWSStorage aWSStorage;
-        public UploadControlViewModel()
+        private IUploadInterface uploadHelper;
+        public UploadControlViewModel(IUploadInterface uploadInterface)
         {
             UploadCommand = new RelayCommand(OnUploadCommand, CanExecuteUploadCommand);
-            dbHelper = new DBHelper(); ;
-            aWSStorage = new AWSStorage();
+            uploadHelper = uploadInterface;
         }
 
         private bool CanExecuteUploadCommand()
@@ -28,28 +28,22 @@ namespace iTube.ViewModel
             return FilePath?.Length > 0 && Tumbnail?.Length > 0 && title?.Length > 0;
         }
 
-        private string CreateURLS3(string key)
-        {
-
-            return @"https://intuitbuket.s3.ap-south-1.amazonaws.com/" + key;
-
-        }
-
         private async void OnUploadCommand()
         {
             MessageBus.Instance.Send<LogoutEnableMessage>(new LogoutEnableMessage(false));
             IsUploadDone = true;
-           await  aWSStorage.UploadFile(Title, FilePath);
-           await  aWSStorage.UploadFile(Title + "_Tumbnail", tumbnail);
-            DateTime theDate = DateTime.Now;
-
-            dbHelper.OpenConnection();
-            dbHelper.ExecuteQuery(String.Format("INSERT INTO video(title, uploader, thumbnail,video,views,date_upload) VALUES(\"{0}\", " + App.USER_IDX + ", \"{1}\",\"{2}\",0,\'{3}\');", Title, CreateURLS3(Title + "_Tumbnail"), CreateURLS3(Title), theDate.ToString("yyyy-MM-dd H:mm:ss")));
-            dbHelper.CloseConnection();
+            var result = await uploadHelper.UploadVideo(Title,Tumbnail,FilePath,App.USER_IDX);
             IsUploadDone = false;
             MessageBus.Instance.Send<LogoutEnableMessage>(new LogoutEnableMessage(true));
-            MessageBus.Instance.Send<RefreshVideoMessage>(new RefreshVideoMessage(App.USER_IDX));
 
+            if (result == true)
+            {
+                MessageBus.Instance.Send<RefreshVideoMessage>(new RefreshVideoMessage(App.USER_IDX));
+            }
+            else
+            {
+                MessageBoxResult rsltMessageBox = MessageBox.Show("Not able to upload the video!", "upload Failed !", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
 
         public RelayCommand UploadCommand { get; set; }

@@ -1,4 +1,5 @@
 ﻿using iTube.ViewModel;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -14,8 +15,8 @@ namespace iTube.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            Rate rate = (Rate)value;
-            if ((Rate)Enum.Parse(typeof(Rate), parameter.ToString()) == rate)
+            RateEnum rate = (RateEnum)value;
+            if ((RateEnum)Enum.Parse(typeof(RateEnum), parameter.ToString()) == rate)
             {
                 return new SolidColorBrush(Colors.Red);
             }

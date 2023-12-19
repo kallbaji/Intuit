@@ -11,6 +11,8 @@ namespace Interface
     {
          Task<bool> UploadFile(string keyName, string filePath);
 
-        bool DownloadFile(string keyName, string filePath);
+        Task<bool> DownloadFile(string keyName, string filePath);
+
+        string CreateURLS3(string key);
     }
 }
